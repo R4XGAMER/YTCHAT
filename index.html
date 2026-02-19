@@ -3,444 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Video Chat Hacker</title>
+    <title>TubeChat Hacker</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+        
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            color: #e2e8f0;
+            background: radial-gradient(circle at top left, #1a1a2e, #16213e);
+            height: 100dvh;
             overflow: hidden;
         }
 
         .glass {
-            background: rgba(30, 41, 59, 0.7);
+            background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .glass-strong {
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+        .chat-container::-webkit-scrollbar {
+            width: 4px;
         }
-
-        .glass-input {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(148, 163, 184, 0.2);
-            transition: all 0.3s ease;
+        .chat-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
         }
-
-        .glass-input:focus {
-            border-color: #818cf8;
-            box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.2);
-            outline: none;
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #475569;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); }
-            50% { box-shadow: 0 0 25px rgba(99, 102, 241, 0.5); }
-        }
-
-        .animate-pulse-glow {
-            animation: pulse-glow 2s infinite;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .message-enter {
-            animation: slideUp 0.3s ease-out forwards;
-        }
-
+        
         .loader {
-            border: 3px solid rgba(255,255,255,0.1);
-            border-radius: 50%;
-            border-top: 3px solid #818cf8;
-            width: 24px;
-            height: 24px;
-            -webkit-animation: spin 1s linear infinite;
-            animation: spin 1s linear infinite;
+            border-top-color: #3498db;
+            animation: spinner 0.6s linear infinite;
         }
-
-        @keyframes spin {
+        @keyframes spinner {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        .safe-area-top { padding-top: env(safe-area-inset-top); }
-        .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }
-
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
     </style>
 </head>
-<body class="h-screen w-screen flex flex-col bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800">
+<body class="text-gray-100 flex flex-col">
 
-    <header class="glass-strong z-20 px-4 py-3 flex justify-between items-center border-b border-slate-700/50 safe-area-top shrink-0">
-        <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                <i class="fa-brands fa-youtube text-white text-sm"></i>
+    <header class="p-4 flex justify-between items-center glass border-b border-white/10">
+        <div class="flex items-center gap-2">
+            <div class="bg-red-500 p-1.5 rounded-lg">
+                <i data-lucide="terminal" class="w-5 h-5 text-white"></i>
             </div>
-            <div>
-                <h1 class="font-bold text-lg tracking-tight text-white leading-none">Chat Hacker</h1>
-                <p class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold" id="status-text">Ready</p>
-            </div>
+            <h1 class="font-bold tracking-tight text-lg">TubeChat <span class="text-red-500 underline">Hacker</span></h1>
         </div>
-        <button onclick="toggleSettings()" class="w-10 h-10 rounded-full hover:bg-slate-700/50 flex items-center justify-center transition-colors text-slate-400 hover:text-white">
-            <i class="fa-solid fa-gear text-lg"></i>
+        <button onclick="toggleModal(true)" class="p-2 hover:bg-white/10 rounded-full transition-all">
+            <i data-lucide="settings" class="w-6 h-6 text-gray-400"></i>
         </button>
     </header>
 
-    <main class="flex-1 relative flex flex-col overflow-hidden">
+    <div class="p-4 glass m-3 rounded-2xl flex gap-2">
+        <input id="ytUrl" type="text" placeholder="Paste YouTube URL..." 
+               class="bg-white/5 border border-white/10 rounded-xl px-4 py-3 flex-grow focus:outline-none focus:ring-2 focus:ring-red-500/50 text-sm">
+        <button onclick="loadVideo()" id="loadBtn" class="bg-red-600 hover:bg-red-500 px-4 py-3 rounded-xl font-semibold text-sm flex items-center gap-2 transition-all active:scale-95">
+            <span>Load</span>
+            <i data-lucide="zap" class="w-4 h-4"></i>
+        </button>
+    </div>
 
-        <div id="input-section" class="shrink-0 p-4 transition-all duration-500 ease-in-out">
-            <div class="glass rounded-2xl p-1 flex items-center gap-2 shadow-lg">
-                <input type="text" id="youtube-url" placeholder="Paste YouTube URL..." 
-                    class="glass-input w-full bg-transparent text-white px-4 py-3 rounded-xl text-sm placeholder-slate-500 focus:ring-0 border-none"
-                    value="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
-                <button onclick="loadVideo()" id="load-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-3 rounded-xl font-medium text-sm transition-all active:scale-95 shrink-0 flex items-center gap-2">
-                    <span>Load</span>
-                    <i class="fa-solid fa-bolt"></i>
-                </button>
-            </div>
-            <p class="text-xs text-slate-500 mt-2 text-center">Powered by Jina AI & OpenRouter</p>
-        </div>
-
-        <div id="chat-container" class="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-4 no-scrollbar relative">
-            <div id="empty-state" class="absolute inset-0 flex flex-col items-center justify-center text-center p-8 opacity-60">
-                <div class="w-20 h-20 rounded-full bg-slate-800 flex items-center justify-center mb-4 border border-slate-700">
-                    <i class="fa-solid fa-robot text-3xl text-slate-500"></i>
-                </div>
-                <h3 class="text-lg font-semibold text-slate-300">No Video Loaded</h3>
-                <p class="text-sm text-slate-500 mt-2 max-w-xs">Paste a YouTube URL above to extract the transcript and start chatting with the AI about the video content.</p>
-            </div>
-
-            <div id="messages-list" class="space-y-4 pb-20"></div>
-        </div>
-
-        <div id="chat-input-area" class="shrink-0 p-4 glass-strong border-t border-slate-700/50 safe-area-bottom transform translate-y-full transition-transform duration-300">
-            <div class="flex items-end gap-2 bg-slate-800/50 p-2 rounded-2xl border border-slate-700/50">
-                <textarea id="user-message" rows="1" placeholder="Ask about the video..." 
-                    class="w-full bg-transparent text-white px-3 py-2 max-h-32 resize-none outline-none text-sm placeholder-slate-500"
-                    oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"
-                    onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessage(); }"></textarea>
-                <button onclick="sendMessage()" id="send-btn" class="w-10 h-10 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center transition-all active:scale-90 shrink-0 disabled:opacity-50 disabled:cursor-not-allowed">
-                    <i class="fa-solid fa-paper-plane text-sm"></i>
-                </button>
+    <div id="chatArea" class="flex-grow overflow-y-auto chat-container p-4 space-y-4">
+        <div class="flex flex-col gap-1">
+            <span class="text-[10px] uppercase font-bold text-gray-500 ml-1">System</span>
+            <div class="glass p-3 rounded-2xl rounded-tl-none max-w-[85%] text-sm">
+                Ready to extract intel. Paste a YouTube URL and hit Load.
             </div>
         </div>
+    </div>
 
-        <div id="loading-overlay" class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm z-30 flex flex-col items-center justify-center hidden">
-            <div class="loader mb-4"></div>
-            <p id="loading-text" class="text-indigo-400 font-medium text-sm animate-pulse">Hacking Transcript...</p>
+    <div id="globalLoader" class="hidden px-4 py-2 justify-center">
+        <div class="loader ease-linear rounded-full border-2 border-t-2 border-gray-600 h-6 w-6"></div>
+    </div>
+
+    <div class="p-4 glass rounded-t-3xl">
+        <div class="flex gap-2 bg-white/5 p-2 rounded-2xl border border-white/10">
+            <input id="userInput" type="text" placeholder="Ask about the video..." 
+                   class="bg-transparent px-3 py-2 flex-grow focus:outline-none text-sm"
+                   onkeypress="if(event.key === 'Enter') sendMessage()">
+            <button onclick="sendMessage()" class="bg-white text-black p-2 rounded-xl hover:bg-gray-200 transition-all">
+                <i data-lucide="send" class="w-5 h-5"></i>
+            </button>
         </div>
-    </main>
+    </div>
 
-    <div id="settings-modal" class="fixed inset-0 z-50 hidden">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="toggleSettings()"></div>
-        <div class="absolute bottom-0 left-0 right-0 md:top-1/2 md:left-1/2 md:bottom-auto md:right-auto md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-md bg-slate-900 md:rounded-2xl rounded-t-2xl border border-slate-700 shadow-2xl transform transition-transform duration-300 translate-y-full md:translate-y-0 scale-95 opacity-0" id="settings-panel">
-
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-bold text-white">Configuration</h2>
-                    <button onclick="toggleSettings()" class="text-slate-400 hover:text-white">
-                        <i class="fa-solid fa-xmark text-xl"></i>
-                    </button>
+    <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-6">
+        <div class="glass w-full max-w-sm rounded-3xl p-6 border border-white/20">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold">Config</h2>
+                <button onclick="toggleModal(false)" class="text-gray-400"><i data-lucide="x"></i></button>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs uppercase font-bold text-gray-500 mb-1 block">OpenRouter API Key</label>
+                    <input id="apiKey" type="password" placeholder="sk-or-..." 
+                           class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:ring-1 focus:ring-red-500">
                 </div>
-
-                <div class="space-y-5">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">OpenRouter API Key</label>
-                        <div class="relative">
-                            <input type="password" id="api-key-input" placeholder="sk-or-v1-..." 
-                                class="glass-input w-full text-white px-4 py-3 rounded-xl text-sm font-mono">
-                            <button onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
-                                <i class="fa-solid fa-eye" id="eye-icon"></i>
-                            </button>
-                        </div>
-                        <p class="text-[10px] text-slate-500 mt-1">Stored locally in your browser.</p>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Model Name</label>
-                        <input type="text" id="model-input" placeholder="e.g., google/gemini-2.5-flash" 
-                            class="glass-input w-full text-white px-4 py-3 rounded-xl text-sm">
-                        <p class="text-[10px] text-slate-500 mt-1">Enter exact model ID from OpenRouter.</p>
-                    </div>
-
-                    <div class="bg-indigo-900/20 border border-indigo-500/20 rounded-lg p-3">
-                        <div class="flex gap-3">
-                            <i class="fa-solid fa-circle-info text-indigo-400 mt-0.5"></i>
-                            <div class="text-xs text-indigo-200">
-                                <p class="font-semibold mb-1">How to get started:</p>
-                                <ul class="list-disc list-inside space-y-1 text-slate-400">
-                                    <li>Get a free key at <a href="https://openrouter.ai" target="_blank" class="text-indigo-400 underline">openrouter.ai</a></li>
-                                    <li>Find model IDs on their models page</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                <div>
+                    <label class="text-xs uppercase font-bold text-gray-500 mb-1 block">Model Identifier</label>
+                    <input id="modelName" type="text" placeholder="e.g. google/gemini-2.0-flash-lite-001" 
+                           class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:ring-1 focus:ring-red-500">
                 </div>
-
-                <button onclick="saveSettings()" class="w-full mt-6 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 rounded-xl transition-all active:scale-95 shadow-lg shadow-indigo-500/25">
-                    Save Settings
+                <button onclick="saveSettings()" class="w-full bg-white text-black font-bold py-3 rounded-xl mt-2 active:scale-95 transition-all">
+                    Save Configuration
                 </button>
             </div>
         </div>
     </div>
 
     <script>
+        // Init Lucide Icons
+        lucide.createIcons();
+
         let videoContext = "";
-        let messages = [];
-        let isSettingsOpen = false;
+        
+        // Load settings from storage
+        document.getElementById('apiKey').value = localStorage.getItem('hacker_key') || '';
+        document.getElementById('modelName').value = localStorage.getItem('hacker_model') || 'google/gemini-2.0-flash-lite-001';
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedKey = localStorage.getItem('openrouter_api_key');
-            const savedModel = localStorage.getItem('openrouter_model');
-
-            if (savedKey) document.getElementById('api-key-input').value = savedKey;
-            if (savedModel) document.getElementById('model-input').value = savedModel;
-        });
-
-        function toggleSettings() {
-            const modal = document.getElementById('settings-modal');
-            const panel = document.getElementById('settings-panel');
-
-            isSettingsOpen = !isSettingsOpen;
-
-            if (isSettingsOpen) {
-                modal.classList.remove('hidden');
-                setTimeout(() => {
-                    panel.classList.remove('translate-y-full', 'scale-95', 'opacity-0');
-                    if(window.innerWidth >= 768) {
-                         panel.classList.remove('md:translate-y-full');
-                    }
-                }, 10);
-            } else {
-                panel.classList.add('translate-y-full', 'scale-95', 'opacity-0');
-                if(window.innerWidth >= 768) {
-                     panel.classList.add('md:translate-y-full');
-                }
-                setTimeout(() => {
-                    modal.classList.add('hidden');
-                }, 300);
-            }
-        }
-
-        function togglePassword() {
-            const input = document.getElementById('api-key-input');
-            const icon = document.getElementById('eye-icon');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
+        function toggleModal(show) {
+            const modal = document.getElementById('settingsModal');
+            modal.classList.toggle('hidden', !show);
         }
 
         function saveSettings() {
-            const key = document.getElementById('api-key-input').value.trim();
-            const model = document.getElementById('model-input').value.trim();
-
-            if (!key || !model) {
-                alert("Please enter both API Key and Model Name");
-                return;
-            }
-
-            localStorage.setItem('openrouter_api_key', key);
-            localStorage.setItem('openrouter_model', model);
-
-            toggleSettings();
-            showToast("Settings Saved Successfully");
-        }
-
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.className = 'fixed top-20 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-4 py-2 rounded-full text-sm shadow-xl border border-slate-700 z-50 animate-bounce';
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2000);
-        }
-
-        function setLoading(isLoading, text = "Loading...") {
-            const overlay = document.getElementById('loading-overlay');
-            const loadingText = document.getElementById('loading-text');
-
-            if (isLoading) {
-                loadingText.textContent = text;
-                overlay.classList.remove('hidden');
-            } else {
-                overlay.classList.add('hidden');
-            }
+            localStorage.setItem('hacker_key', document.getElementById('apiKey').value);
+            localStorage.setItem('hacker_model', document.getElementById('modelName').value);
+            toggleModal(false);
+            appendMessage('system', 'Settings updated successfully.');
         }
 
         async function loadVideo() {
-            const urlInput = document.getElementById('youtube-url');
-            const url = urlInput.value.trim();
+            const url = document.getElementById('ytUrl').value;
+            if(!url) return alert('Paste a URL first!');
 
-            if (!url) {
-                alert("Please enter a YouTube URL");
-                return;
-            }
-
-            const apiKey = localStorage.getItem('openrouter_api_key');
-            const model = localStorage.getItem('openrouter_model');
-
-            if (!apiKey || !model) {
-                alert("Please configure your OpenRouter API Key and Model in Settings first.");
-                toggleSettings();
-                return;
-            }
-
-            setLoading(true, "Extracting Transcript via Jina AI...");
-            document.getElementById('status-text').textContent = "Fetching...";
-            document.getElementById('status-text').className = "text-[10px] text-indigo-400 uppercase tracking-wider font-semibold animate-pulse";
-
+            const btn = document.getElementById('loadBtn');
+            const loader = document.getElementById('globalLoader');
+            
+            btn.disabled = true;
+            loader.classList.remove('hidden');
+            
             try {
-                const jinaUrl = `https://r.jina.ai/${url}`;
-
-                const response = await fetch(jinaUrl);
-
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch transcript: ${response.status}`);
-                }
-
+                const response = await fetch(`https://r.jina.ai/${url}`);
                 const text = await response.text();
-
-                if (text.includes("Failed to fetch") || text.length < 50) {
-                    throw new Error("Could not extract transcript. Video might not have captions or is restricted.");
-                }
-
                 videoContext = text;
-
-                document.getElementById('input-section').classList.add('-translate-y-full', 'opacity-0', 'h-0', 'p-0', 'overflow-hidden');
-                document.getElementById('empty-state').classList.add('hidden');
-                document.getElementById('chat-input-area').classList.remove('translate-y-full');
-
-                addMessage("system", "Video context loaded successfully. You can now ask questions about the content.");
-
-                document.getElementById('status-text').textContent = "Active";
-                document.getElementById('status-text').className = "text-[10px] text-emerald-400 uppercase tracking-wider font-semibold";
-
-                document.getElementById('user-message').focus();
-
-            } catch (error) {
-                console.error(error);
-                alert("Error: " + error.message);
-                document.getElementById('status-text').textContent = "Error";
-                document.getElementById('status-text').className = "text-[10px] text-red-400 uppercase tracking-wider font-semibold";
+                appendMessage('system', 'Video transcript intercepted. Ready for interrogation.');
+            } catch (err) {
+                appendMessage('system', 'Error fetching transcript. Check your URL.');
             } finally {
-                setLoading(false);
+                btn.disabled = false;
+                loader.classList.add('hidden');
             }
         }
 
         async function sendMessage() {
-            const input = document.getElementById('user-message');
-            const message = input.value.trim();
+            const input = document.getElementById('userInput');
+            const question = input.value.trim();
+            const key = localStorage.getItem('hacker_key');
+            const model = localStorage.getItem('hacker_model');
 
-            if (!message) return;
+            if(!question) return;
+            if(!videoContext) return appendMessage('system', 'Load a video first!');
+            if(!key) return toggleModal(true);
 
-            const apiKey = localStorage.getItem('openrouter_api_key');
-            const model = localStorage.getItem('openrouter_model');
-
-            if (!apiKey || !model) {
-                toggleSettings();
-                return;
-            }
-
-            addMessage("user", message);
+            appendMessage('user', question);
             input.value = '';
-            input.style.height = 'auto';
-
-            setLoading(true, "AI is thinking...");
-            document.getElementById('send-btn').disabled = true;
+            document.getElementById('globalLoader').classList.remove('hidden');
 
             try {
-                const systemPrompt = `You are an AI assistant analyzing a YouTube video. Here is the transcript/content of the video:
-
----
-${videoContext}
----
-
-Answer the user's questions based ONLY on the video content provided above. If the answer is not in the video, say so.`;
-
                 const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                     method: "POST",
                     headers: {
-                        "Authorization": `Bearer ${apiKey}`,
-                        "Content-Type": "application/json",
-                        "HTTP-Referer": window.location.href,
-                        "X-Title": "YouTube Chat Hacker"
+                        "Authorization": `Bearer ${key}`,
+                        "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
                         "model": model,
                         "messages": [
-                            {
-                                "role": "system",
-                                "content": systemPrompt
-                            },
-                            {
-                                "role": "user",
-                                "content": message
-                            }
+                            {"role": "system", "content": "You are a video analysis assistant. Use the following transcript to answer the user: " + videoContext},
+                            {"role": "user", "content": question}
                         ]
                     })
                 });
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error?.message || `API Error: ${response.status}`);
-                }
-
                 const data = await response.json();
                 const aiResponse = data.choices[0].message.content;
-
-                addMessage("assistant", aiResponse);
-
-            } catch (error) {
-                console.error(error);
-                addMessage("error", "Error: " + error.message);
+                appendMessage('ai', aiResponse);
+            } catch (err) {
+                appendMessage('system', 'Connection failed. Check API key/Model name.');
             } finally {
-                setLoading(false);
-                document.getElementById('send-btn').disabled = false;
+                document.getElementById('globalLoader').classList.add('hidden');
             }
         }
 
-        function addMessage(role, content) {
-            const container = document.getElementById('messages-list');
-            const div = document.createElement('div');
-
-            let bgClass, icon, align;
-
-            if (role === 'user') {
-                bgClass = 'bg-indigo-600 text-white rounded-2xl rounded-tr-sm';
-                align = 'ml-auto';
-               
+        function appendMessage(role, text) {
+            const chatArea = document.getElementById('chatArea');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'flex flex-col gap-1';
+            
+            const isUser = role === 'user';
+            const isSystem = role === 'system';
+            
+            msgDiv.innerHTML = `
+                <span class="text-[10px] uppercase font-bold text-gray-500 ${isUser ? 'text-right mr-1' : 'ml-1'}">${role}</span>
+                <div class="${isUser ? 'bg-red-600 self-end rounded-tr-none' : 'glass self-start rounded-tl-none'} 
+                            ${isSystem ? 'italic text-gray-400' : ''} 
+                            p-3 rounded-2xl max-w-[85%] text-sm shadow-xl">
+                    ${text}
+                </div>
+            `;
+            
+            chatArea.appendChild(msgDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+    </script>
+</body>
+</html>
