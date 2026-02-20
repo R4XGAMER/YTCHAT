@@ -3,64 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TITAN_V21_10MIN_SCAN</title>
+    <title>TITAN_V23_STEPFUN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
         body { background: #000; color: #00ff41; font-family: 'Share Tech Mono', monospace; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
-        .hacker-panel { border: 1px solid #00ff41; background: rgba(0, 30, 0, 0.4); box-shadow: 0 0 15px rgba(0,255,65,0.2); }
-        .progress-box { height: 12px; background: #001a00; border-radius: 6px; overflow: hidden; border: 1px solid #00ff41; }
-        #fill { height: 100%; width: 0%; background: linear-gradient(90deg, #00441b, #00ff41); transition: width 0.1s; }
+        .hacker-panel { border: 1px solid #00ff41; background: rgba(0, 20, 0, 0.6); }
+        .bar { height: 10px; background: #001a00; border: 1px solid #00ff41; border-radius: 5px; overflow: hidden; }
+        #fill { height: 100%; width: 0%; background: #00ff41; transition: width 0.1s; box-shadow: 0 0 15px #00ff41; }
+        .terminal { font-size: 10px; height: 140px; overflow-y: auto; background: #050505; padding: 10px; border: 1px solid #00441b; }
         #vid { width: 100%; display: none; margin-top: 10px; border: 1px solid #00ff41; border-radius: 8px; }
-        .terminal { font-size: 10px; color: #00ff41; height: 140px; overflow-y: auto; background: #050505; padding: 10px; border: 1px solid #00441b; }
     </style>
 </head>
 <body class="p-4">
 
     <header class="flex justify-between items-center mb-4 border-b border-green-800 pb-2">
-        <h1 class="text-xs font-bold tracking-[0.4em] uppercase flex items-center gap-2">
-            <i data-lucide="shield-alert" class="text-red-500 animate-pulse"></i> TITAN_V21_10MIN
+        <h1 class="text-xs font-bold tracking-[0.3em] flex items-center gap-2">
+            <i data-lucide="zap" class="text-yellow-400"></i> TITAN_V23_STEPFUN
         </h1>
-        <button onclick="toggleSet(true)" class="text-green-500"><i data-lucide="settings"></i></button>
+        <div class="text-[9px] px-2 py-1 bg-green-900/30 rounded border border-green-700">10-MIN_READY</div>
     </header>
 
     <div class="flex-grow space-y-4 overflow-y-auto pr-1">
-        <div class="hacker-panel p-5 rounded-2xl relative">
+        <div class="hacker-panel p-5 rounded-2xl">
             <input type="file" id="vidFile" accept="video/*" class="hidden" onchange="loadVid(this)">
-            <button onclick="document.getElementById('vidFile').click()" class="w-full py-10 border-2 border-dashed border-green-600 rounded-xl flex flex-col items-center gap-3 hover:bg-green-900/30 transition-all">
-                <i data-lucide="database" class="w-12 h-12"></i>
-                <span class="text-xs font-black uppercase">Inject 10-Minute Video Payload</span>
+            <button onclick="document.getElementById('vidFile').click()" class="w-full py-10 border-2 border-dashed border-green-700 rounded-xl flex flex-col items-center gap-3 hover:bg-green-900/20">
+                <i data-lucide="video" class="w-12 h-12"></i>
+                <span class="text-[10px] font-bold">INJECT 10-MIN PAYLOAD</span>
             </button>
             <video id="vid" muted playsinline></video>
             
-            <div class="progress-box mt-5"><div id="fill"></div></div>
-            <div class="flex justify-between text-[10px] mt-2 font-bold uppercase">
-                <span id="batchCount">Batch: 0/4</span>
-                <span id="statusText">Total Frames: 0/200</span>
+            <div class="bar mt-5"><div id="fill"></div></div>
+            <div class="flex justify-between text-[9px] mt-2 font-bold uppercase tracking-tighter">
+                <span id="batchTxt">Batch: 0/10</span>
+                <span id="frameTxt">Frames: 0/200</span>
             </div>
         </div>
 
         <div id="logs" class="terminal font-mono scrollbar-hide">
-            <div>> TITAN Kernel V21 online...</div>
-            <div>> Optimized for 10-minute long-duration analysis.</div>
+            <div>> System Boot: Step-3.5 Flash Protocol Selected.</div>
+            <div>> Optimized for sk-or-v1-681c40f5... API Authentication.</div>
         </div>
 
-        <button id="mainBtn" onclick="runTitanScan()" class="hidden w-full bg-green-500 text-black py-5 font-black rounded uppercase text-sm shadow-[0_0_40px_rgba(0,255,65,0.5)]">
-            Start 200-Frame Titan Crack
+        <button id="mainBtn" onclick="runTitanScan()" class="hidden w-full bg-green-500 text-black py-5 font-black rounded uppercase text-sm shadow-[0_0_30px_#00ff41]">
+            EXECUTE 200-FRAME TITAN SCAN
         </button>
 
-        <div id="report" class="hacker-panel p-4 rounded-xl min-h-[180px] text-xs leading-relaxed mb-10 border-red-900/50">
-            <span class="opacity-20 italic font-bold">Waiting for video signal decryption...</span>
-        </div>
-    </div>
-
-    <div id="settings" class="fixed inset-0 bg-black/98 hidden z-50 flex flex-col justify-center p-8">
-        <div class="max-w-sm mx-auto w-full space-y-5">
-            <h2 class="text-green-500 font-bold border-b border-green-800 pb-2">CRACKER_SETUP</h2>
-            <input id="apiKey" type="password" placeholder="OpenRouter API Key" class="w-full bg-black border border-green-600 p-4 text-green-500 text-sm">
-            <input id="modelId" type="text" placeholder="Model (e.g., arcee-ai/trinity-large-preview:free)" class="w-full bg-black border border-green-600 p-4 text-green-500 text-sm">
-            <button onclick="saveSet()" class="w-full bg-green-600 text-black py-4 font-bold uppercase">Save Config</button>
+        <div id="report" class="hacker-panel p-4 rounded-xl min-h-[200px] text-xs leading-relaxed mb-10 overflow-y-auto max-h-[400px]">
+            <span class="opacity-20 italic font-bold">Awaiting decrypted intelligence...</span>
         </div>
     </div>
 
@@ -68,17 +59,15 @@
 
     <script>
         lucide.createIcons();
-        function toggleSet(s) { document.getElementById('settings').classList.toggle('hidden', !s); }
-        function saveSet() {
-            localStorage.setItem('k_v21', document.getElementById('apiKey').value);
-            localStorage.setItem('m_v21', document.getElementById('modelId').value);
-            toggleSet(false);
-            addLog("Titan Config Synchronized.");
-        }
+        
+        // HARD-CODED CREDENTIALS (As requested)
+        const KEY = "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";
+        const MODEL = "stepfun/step-3.5-flash:free";
 
-        function addLog(m, isErr = false) {
+        function addLog(m, type = 'info') {
             const l = document.getElementById('logs');
-            l.innerHTML += `<div class="${isErr ? 'text-red-500' : ''}">> ${m}</div>`;
+            const color = type === 'err' ? 'text-red-500' : 'text-green-500';
+            l.innerHTML += `<div class="${color}">> ${m}</div>`;
             l.scrollTop = l.scrollHeight;
         }
 
@@ -88,88 +77,79 @@
             v.style.display = 'block';
             v.onloadedmetadata = () => {
                 document.getElementById('mainBtn').classList.remove('hidden');
-                addLog(`TARGET_LOCKED: ${v.duration.toFixed(1)}s (10-Min Ready)`);
+                addLog(`TARGET_LOCKED: ${Math.floor(v.duration/60)}m ${Math.floor(v.duration%60)}s Payload.`);
             };
         }
 
         async function runTitanScan() {
-            const key = localStorage.getItem('k_v21');
-            const model = localStorage.getItem('m_v21');
-            if(!key || !model) return toggleSet(true);
-
             const v = document.getElementById('vid');
-            const btn = document.getElementById('mainBtn');
             const fill = document.getElementById('fill');
             const report = document.getElementById('report');
             const canv = document.getElementById('canvas');
             const ctx = canv.getContext('2d');
+            const btn = document.getElementById('mainBtn');
 
             btn.disabled = true;
-            btn.innerText = "CRACKING 10-MIN PAYLOAD...";
+            btn.innerText = "CRACKING...";
             report.innerHTML = "";
             let results = [];
 
-            const totalFrames = 200;
-            const batchSize = 50; 
-            const totalBatches = totalFrames / batchSize;
-            const gap = v.duration / (totalFrames + 1);
+            const total = 200;
+            const bSize = 20; // Micro-batching for Free Model Stability
+            const bTotal = total / bSize;
+            const gap = v.duration / (total + 1);
 
             try {
-                for(let b = 0; b < totalBatches; b++) {
-                    document.getElementById('batchCount').innerText = `Batch: ${b + 1}/${totalBatches}`;
-                    addLog(`SCRAPING_BATCH: ${b + 1}/${totalBatches}`);
+                for(let b = 0; b < bTotal; b++) {
+                    document.getElementById('batchTxt').innerText = `Batch: ${b+1}/${bTotal}`;
+                    const batchParts = [{ type: "text", text: "Examine these 20 frames from a video. Identify any password, code, or secret PIN. Output ONLY the password or 'NOT_FOUND'." }];
                     
-                    const batchContent = [{ type: "text", text: "STRICT: Analyze these 50 frames from a 10-minute video. Find any hidden password or key. Be very precise. Output ONLY the password or 'NOT_FOUND'." }];
-                    
-                    for(let i = 1; i <= batchSize; i++) {
-                        const currentIdx = (b * batchSize) + i;
-                        v.currentTime = currentIdx * gap;
+                    for(let i = 1; i <= bSize; i++) {
+                        const idx = (b * bSize) + i;
+                        v.currentTime = idx * gap;
                         await new Promise(r => v.onseeked = r);
                         
-                        // Low resolution but high contrast for password clarity
                         canv.width = 440;
                         canv.height = v.videoHeight * (440 / v.videoWidth);
                         ctx.drawImage(v, 0, 0, canv.width, canv.height);
                         
-                        batchContent.push({
-                            type: "image_url",
-                            image_url: { url: canv.toDataURL('image/jpeg', 0.35) }
-                        });
+                        batchParts.push({ type: "image_url", image_url: { url: canv.toDataURL('image/jpeg', 0.35) } });
                         
-                        const prog = (currentIdx / totalFrames) * 100;
-                        fill.style.width = prog + '%';
-                        document.getElementById('statusText').innerText = `Captured: ${currentIdx}/${totalFrames}`;
+                        fill.style.width = (idx/total)*100 + '%';
+                        document.getElementById('frameTxt').innerText = `Frames: ${idx}/${total}`;
                     }
 
-                    addLog(`BATCH_${b+1}: Transmitting to AI...`);
+                    addLog(`SENDING_BATCH_${b+1} to OpenRouter...`);
                     const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                         method: "POST",
-                        headers: { "Authorization": `Bearer ${key}`, "Content-Type": "application/json" },
-                        body: JSON.stringify({ model: model, messages: [{ role: "user", content: batchContent }] })
+                        headers: { 
+                            "Authorization": `Bearer ${KEY}`, 
+                            "Content-Type": "application/json",
+                            "HTTP-Referer": window.location.origin,
+                            "X-Title": "Titan Cracker"
+                        },
+                        body: JSON.stringify({ model: MODEL, messages: [{ role: "user", content: batchParts }] })
                     });
 
                     const data = await res.json();
-                    if(data.error) throw new Error(data.error.message);
+                    if(data.error) throw new Error(data.error.message || "API Connection Lost");
                     
                     const batchRes = data.choices[0].message.content;
-                    results.push(`<div class="mb-2 p-2 border-l-2 border-green-500 bg-green-900/10">Batch ${b+1}: ${batchRes}</div>`);
-                    addLog(`BATCH_${b+1}_COMPLETE: Data Extracted.`);
+                    results.push(`<div class="mb-2 p-2 border-l-2 border-green-500 bg-green-950/20 font-bold text-white">B${b+1}: ${batchRes}</div>`);
+                    addLog(`BATCH_${b+1}_DECRYPTED.`);
                 }
 
-                report.innerHTML = `<div class="text-red-500 font-bold underline mb-3 uppercase tracking-tighter text-center">Titan Deep Scan Final Intel</div>` + results.join('');
-                addLog("TITAN_DEEP_SCAN_SUCCESS.");
+                report.innerHTML = `<div class="text-red-500 font-bold border-b border-red-900 pb-1 mb-2">TITAN_FINAL_DATA_REPORT:</div>` + results.join('');
+                addLog("TITAN_DEEP_SCAN_SUCCESSFUL.");
 
             } catch(e) {
-                addLog("FATAL_ERROR: " + e.message, true);
-                report.innerHTML = `<div class="text-red-600 font-black">CRITICAL_FAIL: ${e.message}</div>`;
+                addLog("FATAL_ERROR: " + e.message, 'err');
+                report.innerHTML = `<div class="text-red-500 font-black underline">CRITICAL_EXCEPTION:</div><div class="text-white mt-1 italic">${e.message}</div><div class="text-[9px] mt-2 text-yellow-600">Tip: Check if Key is active and has credits/quota.</div>`;
             } finally {
                 btn.disabled = false;
-                btn.innerText = "Start 200-Frame Titan Crack";
+                btn.innerText = "EXECUTE 200-FRAME TITAN SCAN";
             }
         }
-
-        document.getElementById('apiKey').value = localStorage.getItem('k_v21') || '';
-        document.getElementById('modelId').value = localStorage.getItem('m_v21') || '';
     </script>
 </body>
 </html>
