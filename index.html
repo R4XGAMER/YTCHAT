@@ -3,148 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini Ultra Cracker</title>
+    <title>Video Pass Sniper - Deep Scan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-        body { background: #080808; color: #00ff41; font-family: 'Share Tech Mono', monospace; }
-        .hacker-card { background: rgba(0, 40, 0, 0.2); border: 1px solid #00ff41; box-shadow: 0 0 15px #00ff4122; }
-        .btn-glow:active { transform: scale(0.95); box-shadow: 0 0 20px #00ff41; }
-        .status-blink { animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0.3; } }
+        body { background: #050505; color: #00ff41; font-family: 'Share Tech Mono', monospace; overflow-x: hidden; }
+        .hacker-panel { background: rgba(0, 20, 0, 0.4); border: 1px solid #00ff41; position: relative; }
+        .scanning-bar { position: absolute; width: 100%; height: 3px; background: #00ff41; top: 0; animation: move 2s linear infinite; display: none; box-shadow: 0 0 15px #00ff41; }
+        @keyframes move { 0% { top: 0; } 100% { top: 100%; } }
+        #vidPreview { width: 100%; border-radius: 8px; display: none; margin-top: 10px; border: 1px solid #00441b; }
+        .log-entry { font-size: 10px; color: #008f11; border-left: 2px solid #008f11; padding-left: 5px; margin-bottom: 2px; }
     </style>
 </head>
-<body class="p-4 flex flex-col h-screen max-h-screen overflow-hidden">
+<body class="p-4 flex flex-col h-screen max-h-screen">
 
     <header class="flex justify-between items-center mb-4 border-b border-green-900 pb-2">
-        <div class="flex items-center gap-2">
-            <i data-lucide="brain-circuit" class="text-green-400"></i>
-            <h1 class="text-lg font-bold tracking-tighter">GEMINI_VISION_V7</h1>
-        </div>
-        <button onclick="toggleModal(true)" class="p-2"><i data-lucide="settings"></i></button>
+        <h1 class="text-lg font-bold tracking-widest uppercase">AUTO_VIDEO_WATCHER_v9</h1>
+        <button onclick="document.getElementById('set').classList.toggle('hidden')"><i data-lucide="shield-alert"></i></button>
     </header>
 
     <div class="space-y-4 overflow-y-auto flex-grow pb-24">
-        <div class="hacker-card p-3 rounded-lg">
-            <label class="text-[10px] text-green-500/60 uppercase">Step 1: Audio Signal Intercept</label>
-            <div class="flex gap-2 mt-2">
-                <input id="ytUrl" type="text" placeholder="YouTube Link..." class="flex-grow bg-black border border-green-900 p-2 text-sm text-green-400 focus:outline-none">
-                <button onclick="loadTranscript()" class="bg-green-700 text-black px-4 py-2 font-bold text-xs btn-glow">FETCH</button>
-            </div>
-        </div>
-
-        <div class="hacker-card p-3 rounded-lg border-red-900 shadow-red-900/10">
-            <label class="text-[10px] text-red-500 uppercase">Step 2: Visual Frame Analysis</label>
-            <input type="file" id="imgInp" accept="image/*" class="hidden" onchange="scanImage(this)">
-            <button onclick="document.getElementById('imgInp').click()" class="w-full bg-red-900/20 border border-red-600 text-red-500 py-3 mt-2 font-bold text-xs flex items-center justify-center gap-2 btn-glow">
-                <i data-lucide="camera"></i> UPLOAD SCREENSHOT (FOR ON-SCREEN PASS)
+        <div class="hacker-panel p-4 rounded-xl overflow-hidden min-h-[120px]">
+            <div id="scanner" class="scanning-bar"></div>
+            <label class="text-[10px] opacity-60 uppercase font-bold">Target Video Input</label>
+            <input type="file" id="vidFile" accept="video/*" class="hidden" onchange="loadVideo(this)">
+            <button onclick="document.getElementById('vidFile').click()" class="w-full bg-green-950 border border-green-500 py-4 mt-2 font-bold text-xs flex items-center justify-center gap-2">
+                <i data-lucide="upload-cloud"></i> SELECT MP4 VIDEO FILE
             </button>
+            <video id="vidPreview" muted></video>
         </div>
 
-        <div id="status" class="text-[10px] status-blink uppercase text-center text-green-700">System: Ready...</div>
-        
-        <div id="output" class="hacker-card p-4 rounded-lg min-h-[150px] text-sm whitespace-pre-wrap leading-relaxed">
-            <span class="opacity-30 italic">No data extracted yet. 
-            Agar password screen par dikhaya gaya tha, toh screenshot upload karein.</span>
+        <div id="logs" class="h-24 overflow-y-auto bg-black/50 p-2 rounded border border-green-900/30">
+            <div class="log-entry">SYSTEM: Awaiting video upload...</div>
+        </div>
+
+        <button id="startBtn" onclick="deepScan()" class="hidden w-full bg-green-600 text-black py-4 font-black rounded-xl shadow-[0_0_20px_rgba(0,255,65,0.4)] uppercase">
+            Start Deep AI Video Scan
+        </button>
+
+        <div id="output" class="hacker-panel p-4 rounded-xl min-h-[150px] text-sm leading-relaxed">
+            <span class="opacity-30">Scan results will appear here after video processing...</span>
         </div>
     </div>
 
-    <div class="fixed bottom-0 left-0 w-full p-4 bg-black/90 border-t border-green-900">
-        <div class="flex gap-2">
-            <input id="userQ" type="text" placeholder="Ask Gemini..." class="flex-grow bg-black border border-green-900 p-3 text-sm text-green-400 focus:outline-none">
-            <button onclick="manualAsk()" class="p-3 bg-green-900/50 border border-green-500 rounded"><i data-lucide="send"></i></button>
-        </div>
+    <div id="set" class="fixed inset-0 bg-black/98 hidden z-50 p-10 flex flex-col justify-center">
+        <h2 class="text-green-500 mb-4 underline">AUTH_REQUIRED</h2>
+        <input id="key" type="password" placeholder="Gemini API Key" class="w-full bg-black border border-green-500 p-4 mb-6 text-green-500">
+        <button onclick="save()" class="w-full bg-green-600 text-black py-4 font-bold">SAVE_AND_ACTIVATE</button>
     </div>
 
-    <div id="settings" class="fixed inset-0 bg-black hidden z-50 p-10">
-        <h2 class="text-green-500 text-xl mb-6">GEMINI_API_AUTH</h2>
-        <input id="apiKey" type="password" placeholder="Paste Gemini API Key (AIStudio)" class="w-full bg-black border border-green-500 p-4 mb-4 text-green-400">
-        <p class="text-[10px] opacity-50 mb-6">Note: Use Direct API Key from Google AI Studio.</p>
-        <button onclick="saveSettings()" class="w-full bg-green-600 text-black py-4 font-bold rounded-xl">SAVE & REBOOT</button>
-    </div>
+    <canvas id="procCanvas" style="display:none;"></canvas>
 
     <script>
         lucide.createIcons();
-        let transcriptData = "";
+        let videoFile = null;
 
-        function toggleModal(s) { document.getElementById('settings').classList.toggle('hidden', !s); }
-        function saveSettings() {
-            localStorage.setItem('gem_key', document.getElementById('apiKey').value);
-            toggleModal(false);
+        function save() {
+            localStorage.setItem('gem_key', document.getElementById('key').value);
+            document.getElementById('set').classList.add('hidden');
         }
 
-        function speak(text) {
-            const u = new SpeechSynthesisUtterance(text.replace(/[^\w\s]/gi, ''));
-            u.rate = 0.9; u.pitch = 0.8;
-            window.speechSynthesis.speak(u);
+        function addLog(msg) {
+            const l = document.getElementById('logs');
+            l.innerHTML += `<div class="log-entry">${new Date().toLocaleTimeString()}: ${msg}</div>`;
+            l.scrollTop = l.scrollHeight;
         }
 
-        async function loadTranscript() {
-            const url = document.getElementById('ytUrl').value;
-            if(!url) return;
-            document.getElementById('status').innerText = "FETCHING AUDIO DATA...";
-            try {
-                const res = await fetch(`https://r.jina.ai/${url}`);
-                transcriptData = await res.text();
-                document.getElementById('status').innerText = "AUDIO_CAPTURED. Ready to process.";
-                document.getElementById('output').innerText = "Transcript loaded. Ask me for passwords or upload a screenshot.";
-                speak("Signals intercepted. Proceeding.");
-            } catch(e) { document.getElementById('status').innerText = "FETCH_FAILED."; }
+        function loadVideo(input) {
+            videoFile = input.files[0];
+            if (videoFile) {
+                const url = URL.createObjectURL(videoFile);
+                const vid = document.getElementById('vidPreview');
+                vid.src = url;
+                vid.style.display = 'block';
+                document.getElementById('startBtn').classList.remove('hidden');
+                addLog("VIDEO_LOADED: Size " + (videoFile.size/1024/1024).toFixed(2) + "MB");
+            }
         }
 
-        async function geminiRequest(payload) {
+        async function deepScan() {
             const key = localStorage.getItem('gem_key');
-            if(!key) return toggleModal(true);
-            
-            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
-            
-            const res = await fetch(endpoint, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ contents: [{ parts: payload }] })
-            });
-            const data = await res.json();
-            return data.candidates[0].content.parts[0].text;
-        }
+            if(!key) return document.getElementById('set').classList.remove('hidden');
 
-        async function scanImage(input) {
-            if(!input.files[0]) return;
-            document.getElementById('status').innerText = "SCANNING IMAGE FOR VISUAL PASS...";
-            
-            const reader = new FileReader();
-            reader.onload = async function() {
-                const base64 = reader.result.split(',')[1];
-                const payload = [
-                    { text: "Iss screenshot mein dhyan se dekho. Video mein kahin password, zip key, ya pass likha hai? Agar dikh raha hai toh exact password extract karo." },
-                    { inline_data: { mime_type: "image/jpeg", data: base64 } }
-                ];
+            const vid = document.getElementById('vidPreview');
+            const canvas = document.getElementById('procCanvas');
+            const ctx = canvas.getContext('2d');
+            const btn = document.getElementById('startBtn');
+            const scanner = document.getElementById('scanner');
+
+            btn.disabled = true;
+            scanner.style.display = 'block';
+            addLog("INITIATING_DEEP_SCAN...");
+
+            // Logic: Har 20% duration par ek frame lenge (Total 5 frames)
+            const frameCount = 5;
+            const capturedFrames = [];
+            const duration = vid.duration;
+
+            for(let i=1; i<=frameCount; i++) {
+                const time = (duration / (frameCount + 1)) * i;
+                vid.currentTime = time;
+                addLog(`CAPTURING_FRAME at ${time.toFixed(1)}s...`);
                 
-                try {
-                    const result = await geminiRequest(payload);
-                    document.getElementById('output').innerHTML = `<strong class='text-red-500'>[VISION_RESULT]:</strong>\n\n${result}`;
-                    speak("Visual scan complete. Check results.");
-                    document.getElementById('status').innerText = "VISION_COMPLETE.";
-                } catch(e) { document.getElementById('output').innerText = "Error: Gemini API rejected the request."; }
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
+                await new Promise(r => vid.onseeked = r);
+                canvas.width = vid.videoWidth;
+                canvas.height = vid.videoHeight;
+                ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+                capturedFrames.push(canvas.toDataURL('image/jpeg', 0.6).split(',')[1]);
+            }
 
-        async function manualAsk() {
-            const q = document.getElementById('userQ').value;
-            if(!q) return;
-            document.getElementById('status').innerText = "ANALYZING...";
-            const payload = [{ text: `Transcript Context: ${transcriptData}\n\nUser Question: ${q}` }];
+            addLog("SENDING_FRAMES_TO_GEMINI_VISION...");
+
             try {
-                const result = await geminiRequest(payload);
-                document.getElementById('output').innerText = result;
-                speak(result);
-            } catch(e) { alert("API Error"); }
-            document.getElementById('userQ').value = "";
+                const payload = capturedFrames.map(f => ({ inline_data: { mime_type: "image/jpeg", data: f } }));
+                payload.unshift({ text: "Tum ek expert cracker ho. In frames ko dhyan se dekho. Yeh ek video ke screenshots hain. Inme kahin bhi password, zip code, ya secret key likhi hai? Saare potential passwords extract karke list banao." });
+
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: payload }] })
+                });
+
+                const data = await res.json();
+                const result = data.candidates[0].content.parts[0].text;
+                document.getElementById('output').innerHTML = `<strong class="text-red-500">[SCAN_RESULTS]:</strong><br><br>${result.replace(/\n/g,'<br>')}`;
+                addLog("SCAN_SUCCESSFUL.");
+            } catch(e) {
+                addLog("ERROR: API_FAILURE.");
+                alert("API Error! Key check karein.");
+            } finally {
+                btn.disabled = false;
+                scanner.style.display = 'none';
+            }
         }
 
-        document.getElementById('apiKey').value = localStorage.getItem('gem_key') || '';
+        document.getElementById('key').value = localStorage.getItem('gem_key') || '';
     </script>
 </body>
-    </html>
-                
+</html>
