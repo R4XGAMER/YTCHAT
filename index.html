@@ -3,52 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRINITY_V18_OPENROUTER</title>
+    <title>UNIVERSAL_VISION_V19</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-        body { background: #000; color: #00ff41; font-family: 'Share Tech Mono', monospace; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
-        .hacker-border { border: 1px solid rgba(0, 255, 65, 0.5); background: rgba(0, 10, 0, 0.95); }
-        .progress-bar { height: 6px; background: #002200; border-radius: 3px; margin: 10px 0; overflow: hidden; border: 1px solid #00441b; }
-        #fill { height: 100%; width: 0%; background: #00ff41; box-shadow: 0 0 15px #00ff41; transition: width 0.2s; }
-        #vid { width: 100%; border-radius: 4px; display: none; border: 1px solid #00441b; margin-top: 10px; }
-        .log-stream { font-size: 9px; color: #008f11; height: 120px; overflow-y: auto; border-top: 1px solid #111; padding: 10px 0; }
+        body { background: #050505; color: #00ff41; font-family: 'Share Tech Mono', monospace; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+        .hacker-panel { border: 1px solid #00ff41; background: rgba(0, 30, 0, 0.2); box-shadow: 0 0 10px rgba(0,255,65,0.1); }
+        .bar-container { height: 8px; background: #001100; border: 1px solid #00441b; border-radius: 4px; overflow: hidden; }
+        #fill { height: 100%; width: 0%; background: #00ff41; transition: width 0.3s; box-shadow: 0 0 15px #00ff41; }
+        #vid { width: 100%; display: none; margin-top: 10px; border: 1px solid #00441b; border-radius: 4px; }
+        .terminal { font-size: 10px; color: #00ff41; height: 120px; overflow-y: auto; background: black; padding: 8px; border: 1px solid #003300; }
     </style>
 </head>
 <body class="p-4">
 
     <header class="flex justify-between items-center mb-4 border-b border-green-900 pb-2">
-        <div class="flex items-center gap-2">
-            <i data-lucide="box" class="text-blue-500"></i>
-            <h1 class="text-xs font-bold tracking-[0.2em] uppercase">TRINITY_OPENROUTER_v18</h1>
-        </div>
-        <div class="text-[9px] font-bold text-blue-400 bg-blue-900/10 px-2 py-1 rounded">ARCEE_AI_READY</div>
+        <h1 class="text-xs font-bold tracking-widest uppercase flex items-center gap-2">
+            <i data-lucide="radio"></i> SYSTEM_ALL_IN_ONE_V19
+        </h1>
+        <button onclick="toggleConfig(true)" class="text-green-500 hover:rotate-90 transition-transform">
+            <i data-lucide="settings-2"></i>
+        </button>
     </header>
 
-    <div class="flex-grow overflow-y-auto space-y-4 pr-1">
-        <div class="hacker-border p-5 rounded-lg relative overflow-hidden">
-            <input type="file" id="vidInp" accept="video/*" class="hidden" onchange="initVid(this)">
-            <button onclick="document.getElementById('vidInp').click()" class="w-full bg-blue-950/10 border border-blue-500/30 py-8 font-black text-xs flex flex-col items-center gap-3">
-                <i data-lucide="video" class="w-8 h-8 text-blue-500"></i>
-                <span>SELECT 2MIN VIDEO (TRINITY 50-FRAME SCAN)</span>
+    <div class="flex-grow space-y-4 overflow-y-auto pr-1">
+        <div class="hacker-panel p-4 rounded-xl">
+            <input type="file" id="vidFile" accept="video/*" class="hidden" onchange="handleVideo(this)">
+            <button onclick="document.getElementById('vidFile').click()" class="w-full py-6 border-2 border-dashed border-green-800 rounded-lg flex flex-col items-center gap-2 hover:bg-green-900/10">
+                <i data-lucide="clapperboard" class="w-8 h-8"></i>
+                <span class="text-[10px] font-bold">INJECT TARGET VIDEO (MP4)</span>
             </button>
             <video id="vid" muted playsinline></video>
-            <div class="progress-bar"><div id="fill"></div></div>
-            <div id="status" class="text-[9px] text-right mt-1 opacity-50 italic">System: Linked to OpenRouter.</div>
+            <div class="bar-container mt-4"><div id="fill"></div></div>
+            <div id="status" class="text-[9px] text-right mt-1 opacity-60 italic tracking-tighter">Frames: 0/50 ready.</div>
         </div>
 
-        <div id="terminal" class="log-stream font-mono">
-            <div>> Initializing OpenRouter Protocol...</div>
-            <div>> Model: arcee-ai/trinity-large-preview:free</div>
+        <div id="logs" class="terminal font-mono">
+            <div>> Kernel active. Waiting for input...</div>
         </div>
 
-        <button id="mainBtn" onclick="runTrinityScan()" class="hidden w-full bg-blue-600 text-white py-4 font-black rounded uppercase text-sm shadow-[0_0_20px_rgba(59,130,246,0.4)]">
-            EXECUTE TRINITY DEEP CRACK
+        <button id="mainBtn" onclick="runMasterScan()" class="hidden w-full bg-green-600 text-black py-4 font-black rounded uppercase text-sm shadow-[0_0_20px_rgba(0,255,65,0.4)]">
+            Execute 50-Frame Vision Scan
         </button>
 
-        <div id="intel" class="hacker-border p-4 rounded-lg min-h-[160px] text-xs leading-relaxed mb-10 bg-black/50">
-            <div class="opacity-20 text-center mt-10 italic">AWAITING VIDEO PAYLOAD...</div>
+        <div id="output" class="hacker-panel p-4 rounded-xl min-h-[150px] text-xs leading-relaxed">
+            <span class="opacity-30">Scan results will materialize here...</span>
+        </div>
+    </div>
+
+    <div id="configModal" class="fixed inset-0 bg-black/95 hidden z-50 flex flex-col justify-center p-8">
+        <div class="max-w-md mx-auto w-full space-y-6">
+            <h2 class="text-green-500 text-center font-bold underline mb-4">API_CONFIGURATION</h2>
+            <div>
+                <label class="text-[10px] block mb-1">OPENROUTER_API_KEY</label>
+                <input id="apiKey" type="password" placeholder="sk-or-..." class="w-full bg-black border border-green-500 p-3 text-green-500 text-sm outline-none">
+            </div>
+            <div>
+                <label class="text-[10px] block mb-1">MODEL_PATH</label>
+                <input id="modelId" type="text" placeholder="arcee-ai/trinity-large-preview:free" class="w-full bg-black border border-green-500 p-3 text-green-500 text-sm outline-none">
+            </div>
+            <button onclick="saveConfig()" class="w-full bg-green-600 text-black py-3 font-bold uppercase text-xs">Save Settings</button>
+            <button onclick="toggleConfig(false)" class="w-full text-green-800 text-[10px] uppercase underline mt-2">Close without saving</button>
         </div>
     </div>
 
@@ -56,42 +72,50 @@
 
     <script>
         lucide.createIcons();
-        
-        // --- OPENROUTER MASTER CONFIG ---
-        const OR_KEY = "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";
-        const MODEL_ID = "arcee-ai/trinity-large-preview:free";
 
-        function log(m, isErr = false) {
-            const t = document.getElementById('terminal');
-            t.innerHTML += `<div class="${isErr ? 'text-red-500' : ''}">> ${m}</div>`;
-            t.scrollTop = t.scrollHeight;
+        function toggleConfig(show) { document.getElementById('configModal').classList.toggle('hidden', !show); }
+        
+        function saveConfig() {
+            localStorage.setItem('u_key', document.getElementById('apiKey').value);
+            localStorage.setItem('u_model', document.getElementById('modelId').value);
+            toggleConfig(false);
+            addLog("System config updated.");
         }
 
-        function initVid(input) {
-            if(!input.files[0]) return;
+        function addLog(m, isErr = false) {
+            const l = document.getElementById('logs');
+            l.innerHTML += `<div class="${isErr ? 'text-red-500' : ''}">> ${m}</div>`;
+            l.scrollTop = l.scrollHeight;
+        }
+
+        function handleVideo(input) {
             const v = document.getElementById('vid');
             v.src = URL.createObjectURL(input.files[0]);
             v.style.display = 'block';
             v.onloadedmetadata = () => {
                 document.getElementById('mainBtn').classList.remove('hidden');
-                log("TARGET_LOCKED. Video duration identified.");
+                addLog(`Target Video: ${v.duration.toFixed(1)}s identified.`);
             };
         }
 
-        async function runTrinityScan() {
+        async function runMasterScan() {
+            const key = localStorage.getItem('u_key');
+            const model = localStorage.getItem('u_model');
+            if(!key || !model) return toggleConfig(true);
+
             const v = document.getElementById('vid');
             const btn = document.getElementById('mainBtn');
             const bar = document.getElementById('fill');
             const canv = document.getElementById('canvas');
             const ctx = canv.getContext('2d');
-            const intel = document.getElementById('intel');
+            const output = document.getElementById('output');
 
             btn.disabled = true;
-            btn.innerText = "EXTRACTING DATA...";
-            intel.innerHTML = "<div class='text-blue-500 animate-pulse text-center mt-10 tracking-widest'>BUFFERING 50 FRAMES FOR TRINITY AI...</div>";
+            btn.innerText = "PROCESSING...";
+            output.innerHTML = "<div class='animate-pulse text-center mt-10'>DEEP_SCAN_IN_PROGRESS...</div>";
 
-            const contentParts = [{ type: "text", text: "Analyze these video frames. Find any password, zip code, or secret key. Output ONLY the password. If multiple codes exist, list them all." }];
-            const steps = 50; 
+            const contentParts = [{ type: "text", text: "Look at these 50 frames. Is there any password, zip key, or hidden code? Scan everything. Output ONLY the code." }];
+            const steps = 50;
             const gap = v.duration / (steps + 1);
 
             try {
@@ -99,55 +123,53 @@
                     v.currentTime = i * gap;
                     await new Promise(r => v.onseeked = r);
                     
-                    // Optimization: Standardize for Vision model
-                    const targetW = 512; 
-                    const scale = targetW / v.videoWidth;
-                    canv.width = targetW;
-                    canv.height = v.videoHeight * scale;
-                    
+                    canv.width = 480; 
+                    canv.height = v.videoHeight * (480 / v.videoWidth);
                     ctx.drawImage(v, 0, 0, canv.width, canv.height);
-                    const base64 = canv.toDataURL('image/jpeg', 0.4);
                     
                     contentParts.push({
                         type: "image_url",
-                        image_url: { url: base64 }
+                        image_url: { url: canv.toDataURL('image/jpeg', 0.4) }
                     });
                     
                     bar.style.width = (i/steps)*100 + '%';
-                    if(i % 10 === 0) log(`CACHING: Frame ${i}/50 ready.`);
+                    document.getElementById('status').innerText = `Buffer: ${i}/50 Frames`;
+                    if(i % 10 === 0) addLog(`Buffered ${i} keyframes...`);
                 }
 
-                log("TRANSMITTING: Requesting OpenRouter API...");
+                addLog("TRANSMITTING: Communicating with OpenRouter...");
 
                 const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                     method: "POST",
                     headers: {
-                        "Authorization": `Bearer ${OR_KEY}`,
+                        "Authorization": `Bearer ${key}`,
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        model: MODEL_ID,
+                        model: model,
                         messages: [{ role: "user", content: contentParts }]
                     })
                 });
 
                 const data = await res.json();
-                
-                if(data.error) throw new Error(data.error.message || "Unknown API Error");
+                if(data.error) throw new Error(data.error.message);
 
-                const result = data.choices[0].message.content;
-                intel.innerHTML = `<div class="text-blue-500 font-bold mb-2 underline">[TRINITY_REPORT]</div><div class="text-white bg-blue-950/20 p-3 rounded border border-blue-500/20">${result}</div>`;
-                log("SUCCESS: Decryption complete.");
+                const finalResult = data.choices[0].message.content;
+                output.innerHTML = `<div class="text-red-500 font-bold mb-2 underline">[CRACK_REPORT]</div><div class="text-white">${finalResult}</div>`;
+                addLog("SUCCESS: Data extracted.");
 
             } catch(e) {
-                log("API_FAILURE: " + e.message, true);
-                intel.innerHTML = `<div class="text-red-500 font-bold">ERROR:</div><div class="text-xs text-white mt-1">${e.message}</div>`;
+                addLog("FAILURE: " + e.message, true);
+                output.innerHTML = `<div class="text-red-600">ERROR: ${e.message}</div>`;
             } finally {
                 btn.disabled = false;
-                btn.innerText = "EXECUTE TRINITY DEEP CRACK";
+                btn.innerText = "Execute 50-Frame Vision Scan";
             }
         }
+
+        // Initialize Settings
+        document.getElementById('apiKey').value = localStorage.getItem('u_key') || '';
+        document.getElementById('modelId').value = localStorage.getItem('u_model') || '';
     </script>
 </body>
-    </html>
-    
+</html>
