@@ -3,68 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UNIVERSAL_VISION_V19</title>
+    <title>TITAN_V21_10MIN_SCAN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-        body { background: #050505; color: #00ff41; font-family: 'Share Tech Mono', monospace; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
-        .hacker-panel { border: 1px solid #00ff41; background: rgba(0, 30, 0, 0.2); box-shadow: 0 0 10px rgba(0,255,65,0.1); }
-        .bar-container { height: 8px; background: #001100; border: 1px solid #00441b; border-radius: 4px; overflow: hidden; }
-        #fill { height: 100%; width: 0%; background: #00ff41; transition: width 0.3s; box-shadow: 0 0 15px #00ff41; }
-        #vid { width: 100%; display: none; margin-top: 10px; border: 1px solid #00441b; border-radius: 4px; }
-        .terminal { font-size: 10px; color: #00ff41; height: 120px; overflow-y: auto; background: black; padding: 8px; border: 1px solid #003300; }
+        body { background: #000; color: #00ff41; font-family: 'Share Tech Mono', monospace; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+        .hacker-panel { border: 1px solid #00ff41; background: rgba(0, 30, 0, 0.4); box-shadow: 0 0 15px rgba(0,255,65,0.2); }
+        .progress-box { height: 12px; background: #001a00; border-radius: 6px; overflow: hidden; border: 1px solid #00ff41; }
+        #fill { height: 100%; width: 0%; background: linear-gradient(90deg, #00441b, #00ff41); transition: width 0.1s; }
+        #vid { width: 100%; display: none; margin-top: 10px; border: 1px solid #00ff41; border-radius: 8px; }
+        .terminal { font-size: 10px; color: #00ff41; height: 140px; overflow-y: auto; background: #050505; padding: 10px; border: 1px solid #00441b; }
     </style>
 </head>
 <body class="p-4">
 
-    <header class="flex justify-between items-center mb-4 border-b border-green-900 pb-2">
-        <h1 class="text-xs font-bold tracking-widest uppercase flex items-center gap-2">
-            <i data-lucide="radio"></i> SYSTEM_ALL_IN_ONE_V19
+    <header class="flex justify-between items-center mb-4 border-b border-green-800 pb-2">
+        <h1 class="text-xs font-bold tracking-[0.4em] uppercase flex items-center gap-2">
+            <i data-lucide="shield-alert" class="text-red-500 animate-pulse"></i> TITAN_V21_10MIN
         </h1>
-        <button onclick="toggleConfig(true)" class="text-green-500 hover:rotate-90 transition-transform">
-            <i data-lucide="settings-2"></i>
-        </button>
+        <button onclick="toggleSet(true)" class="text-green-500"><i data-lucide="settings"></i></button>
     </header>
 
     <div class="flex-grow space-y-4 overflow-y-auto pr-1">
-        <div class="hacker-panel p-4 rounded-xl">
-            <input type="file" id="vidFile" accept="video/*" class="hidden" onchange="handleVideo(this)">
-            <button onclick="document.getElementById('vidFile').click()" class="w-full py-6 border-2 border-dashed border-green-800 rounded-lg flex flex-col items-center gap-2 hover:bg-green-900/10">
-                <i data-lucide="clapperboard" class="w-8 h-8"></i>
-                <span class="text-[10px] font-bold">INJECT TARGET VIDEO (MP4)</span>
+        <div class="hacker-panel p-5 rounded-2xl relative">
+            <input type="file" id="vidFile" accept="video/*" class="hidden" onchange="loadVid(this)">
+            <button onclick="document.getElementById('vidFile').click()" class="w-full py-10 border-2 border-dashed border-green-600 rounded-xl flex flex-col items-center gap-3 hover:bg-green-900/30 transition-all">
+                <i data-lucide="database" class="w-12 h-12"></i>
+                <span class="text-xs font-black uppercase">Inject 10-Minute Video Payload</span>
             </button>
             <video id="vid" muted playsinline></video>
-            <div class="bar-container mt-4"><div id="fill"></div></div>
-            <div id="status" class="text-[9px] text-right mt-1 opacity-60 italic tracking-tighter">Frames: 0/50 ready.</div>
+            
+            <div class="progress-box mt-5"><div id="fill"></div></div>
+            <div class="flex justify-between text-[10px] mt-2 font-bold uppercase">
+                <span id="batchCount">Batch: 0/4</span>
+                <span id="statusText">Total Frames: 0/200</span>
+            </div>
         </div>
 
-        <div id="logs" class="terminal font-mono">
-            <div>> Kernel active. Waiting for input...</div>
+        <div id="logs" class="terminal font-mono scrollbar-hide">
+            <div>> TITAN Kernel V21 online...</div>
+            <div>> Optimized for 10-minute long-duration analysis.</div>
         </div>
 
-        <button id="mainBtn" onclick="runMasterScan()" class="hidden w-full bg-green-600 text-black py-4 font-black rounded uppercase text-sm shadow-[0_0_20px_rgba(0,255,65,0.4)]">
-            Execute 50-Frame Vision Scan
+        <button id="mainBtn" onclick="runTitanScan()" class="hidden w-full bg-green-500 text-black py-5 font-black rounded uppercase text-sm shadow-[0_0_40px_rgba(0,255,65,0.5)]">
+            Start 200-Frame Titan Crack
         </button>
 
-        <div id="output" class="hacker-panel p-4 rounded-xl min-h-[150px] text-xs leading-relaxed">
-            <span class="opacity-30">Scan results will materialize here...</span>
+        <div id="report" class="hacker-panel p-4 rounded-xl min-h-[180px] text-xs leading-relaxed mb-10 border-red-900/50">
+            <span class="opacity-20 italic font-bold">Waiting for video signal decryption...</span>
         </div>
     </div>
 
-    <div id="configModal" class="fixed inset-0 bg-black/95 hidden z-50 flex flex-col justify-center p-8">
-        <div class="max-w-md mx-auto w-full space-y-6">
-            <h2 class="text-green-500 text-center font-bold underline mb-4">API_CONFIGURATION</h2>
-            <div>
-                <label class="text-[10px] block mb-1">OPENROUTER_API_KEY</label>
-                <input id="apiKey" type="password" placeholder="sk-or-..." class="w-full bg-black border border-green-500 p-3 text-green-500 text-sm outline-none">
-            </div>
-            <div>
-                <label class="text-[10px] block mb-1">MODEL_PATH</label>
-                <input id="modelId" type="text" placeholder="arcee-ai/trinity-large-preview:free" class="w-full bg-black border border-green-500 p-3 text-green-500 text-sm outline-none">
-            </div>
-            <button onclick="saveConfig()" class="w-full bg-green-600 text-black py-3 font-bold uppercase text-xs">Save Settings</button>
-            <button onclick="toggleConfig(false)" class="w-full text-green-800 text-[10px] uppercase underline mt-2">Close without saving</button>
+    <div id="settings" class="fixed inset-0 bg-black/98 hidden z-50 flex flex-col justify-center p-8">
+        <div class="max-w-sm mx-auto w-full space-y-5">
+            <h2 class="text-green-500 font-bold border-b border-green-800 pb-2">CRACKER_SETUP</h2>
+            <input id="apiKey" type="password" placeholder="OpenRouter API Key" class="w-full bg-black border border-green-600 p-4 text-green-500 text-sm">
+            <input id="modelId" type="text" placeholder="Model (e.g., arcee-ai/trinity-large-preview:free)" class="w-full bg-black border border-green-600 p-4 text-green-500 text-sm">
+            <button onclick="saveSet()" class="w-full bg-green-600 text-black py-4 font-bold uppercase">Save Config</button>
         </div>
     </div>
 
@@ -72,14 +68,12 @@
 
     <script>
         lucide.createIcons();
-
-        function toggleConfig(show) { document.getElementById('configModal').classList.toggle('hidden', !show); }
-        
-        function saveConfig() {
-            localStorage.setItem('u_key', document.getElementById('apiKey').value);
-            localStorage.setItem('u_model', document.getElementById('modelId').value);
-            toggleConfig(false);
-            addLog("System config updated.");
+        function toggleSet(s) { document.getElementById('settings').classList.toggle('hidden', !s); }
+        function saveSet() {
+            localStorage.setItem('k_v21', document.getElementById('apiKey').value);
+            localStorage.setItem('m_v21', document.getElementById('modelId').value);
+            toggleSet(false);
+            addLog("Titan Config Synchronized.");
         }
 
         function addLog(m, isErr = false) {
@@ -88,88 +82,94 @@
             l.scrollTop = l.scrollHeight;
         }
 
-        function handleVideo(input) {
+        function loadVid(input) {
             const v = document.getElementById('vid');
             v.src = URL.createObjectURL(input.files[0]);
             v.style.display = 'block';
             v.onloadedmetadata = () => {
                 document.getElementById('mainBtn').classList.remove('hidden');
-                addLog(`Target Video: ${v.duration.toFixed(1)}s identified.`);
+                addLog(`TARGET_LOCKED: ${v.duration.toFixed(1)}s (10-Min Ready)`);
             };
         }
 
-        async function runMasterScan() {
-            const key = localStorage.getItem('u_key');
-            const model = localStorage.getItem('u_model');
-            if(!key || !model) return toggleConfig(true);
+        async function runTitanScan() {
+            const key = localStorage.getItem('k_v21');
+            const model = localStorage.getItem('m_v21');
+            if(!key || !model) return toggleSet(true);
 
             const v = document.getElementById('vid');
             const btn = document.getElementById('mainBtn');
-            const bar = document.getElementById('fill');
+            const fill = document.getElementById('fill');
+            const report = document.getElementById('report');
             const canv = document.getElementById('canvas');
             const ctx = canv.getContext('2d');
-            const output = document.getElementById('output');
 
             btn.disabled = true;
-            btn.innerText = "PROCESSING...";
-            output.innerHTML = "<div class='animate-pulse text-center mt-10'>DEEP_SCAN_IN_PROGRESS...</div>";
+            btn.innerText = "CRACKING 10-MIN PAYLOAD...";
+            report.innerHTML = "";
+            let results = [];
 
-            const contentParts = [{ type: "text", text: "Look at these 50 frames. Is there any password, zip key, or hidden code? Scan everything. Output ONLY the code." }];
-            const steps = 50;
-            const gap = v.duration / (steps + 1);
+            const totalFrames = 200;
+            const batchSize = 50; 
+            const totalBatches = totalFrames / batchSize;
+            const gap = v.duration / (totalFrames + 1);
 
             try {
-                for(let i=1; i<=steps; i++) {
-                    v.currentTime = i * gap;
-                    await new Promise(r => v.onseeked = r);
+                for(let b = 0; b < totalBatches; b++) {
+                    document.getElementById('batchCount').innerText = `Batch: ${b + 1}/${totalBatches}`;
+                    addLog(`SCRAPING_BATCH: ${b + 1}/${totalBatches}`);
                     
-                    canv.width = 480; 
-                    canv.height = v.videoHeight * (480 / v.videoWidth);
-                    ctx.drawImage(v, 0, 0, canv.width, canv.height);
+                    const batchContent = [{ type: "text", text: "STRICT: Analyze these 50 frames from a 10-minute video. Find any hidden password or key. Be very precise. Output ONLY the password or 'NOT_FOUND'." }];
                     
-                    contentParts.push({
-                        type: "image_url",
-                        image_url: { url: canv.toDataURL('image/jpeg', 0.4) }
+                    for(let i = 1; i <= batchSize; i++) {
+                        const currentIdx = (b * batchSize) + i;
+                        v.currentTime = currentIdx * gap;
+                        await new Promise(r => v.onseeked = r);
+                        
+                        // Low resolution but high contrast for password clarity
+                        canv.width = 440;
+                        canv.height = v.videoHeight * (440 / v.videoWidth);
+                        ctx.drawImage(v, 0, 0, canv.width, canv.height);
+                        
+                        batchContent.push({
+                            type: "image_url",
+                            image_url: { url: canv.toDataURL('image/jpeg', 0.35) }
+                        });
+                        
+                        const prog = (currentIdx / totalFrames) * 100;
+                        fill.style.width = prog + '%';
+                        document.getElementById('statusText').innerText = `Captured: ${currentIdx}/${totalFrames}`;
+                    }
+
+                    addLog(`BATCH_${b+1}: Transmitting to AI...`);
+                    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                        method: "POST",
+                        headers: { "Authorization": `Bearer ${key}`, "Content-Type": "application/json" },
+                        body: JSON.stringify({ model: model, messages: [{ role: "user", content: batchContent }] })
                     });
+
+                    const data = await res.json();
+                    if(data.error) throw new Error(data.error.message);
                     
-                    bar.style.width = (i/steps)*100 + '%';
-                    document.getElementById('status').innerText = `Buffer: ${i}/50 Frames`;
-                    if(i % 10 === 0) addLog(`Buffered ${i} keyframes...`);
+                    const batchRes = data.choices[0].message.content;
+                    results.push(`<div class="mb-2 p-2 border-l-2 border-green-500 bg-green-900/10">Batch ${b+1}: ${batchRes}</div>`);
+                    addLog(`BATCH_${b+1}_COMPLETE: Data Extracted.`);
                 }
 
-                addLog("TRANSMITTING: Communicating with OpenRouter...");
-
-                const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${key}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        model: model,
-                        messages: [{ role: "user", content: contentParts }]
-                    })
-                });
-
-                const data = await res.json();
-                if(data.error) throw new Error(data.error.message);
-
-                const finalResult = data.choices[0].message.content;
-                output.innerHTML = `<div class="text-red-500 font-bold mb-2 underline">[CRACK_REPORT]</div><div class="text-white">${finalResult}</div>`;
-                addLog("SUCCESS: Data extracted.");
+                report.innerHTML = `<div class="text-red-500 font-bold underline mb-3 uppercase tracking-tighter text-center">Titan Deep Scan Final Intel</div>` + results.join('');
+                addLog("TITAN_DEEP_SCAN_SUCCESS.");
 
             } catch(e) {
-                addLog("FAILURE: " + e.message, true);
-                output.innerHTML = `<div class="text-red-600">ERROR: ${e.message}</div>`;
+                addLog("FATAL_ERROR: " + e.message, true);
+                report.innerHTML = `<div class="text-red-600 font-black">CRITICAL_FAIL: ${e.message}</div>`;
             } finally {
                 btn.disabled = false;
-                btn.innerText = "Execute 50-Frame Vision Scan";
+                btn.innerText = "Start 200-Frame Titan Crack";
             }
         }
 
-        // Initialize Settings
-        document.getElementById('apiKey').value = localStorage.getItem('u_key') || '';
-        document.getElementById('modelId').value = localStorage.getItem('u_model') || '';
+        document.getElementById('apiKey').value = localStorage.getItem('k_v21') || '';
+        document.getElementById('modelId').value = localStorage.getItem('m_v21') || '';
     </script>
 </body>
 </html>
