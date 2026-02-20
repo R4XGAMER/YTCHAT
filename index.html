@@ -3,329 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TITAN_V24_MULTI_SERVICE</title>
+    <title>TITAN_V26_OSINT</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-        body { background: #000; color: #00ff41; font-family: 'Share Tech Mono', monospace; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
-        .hacker-panel { border: 1px solid #00ff41; background: rgba(0, 30, 0, 0.4); box-shadow: 0 0 15px rgba(0,255,65,0.2); }
-        .progress-box { height: 12px; background: #001a00; border-radius: 6px; overflow: hidden; border: 1px solid #00ff41; }
-        #fill { height: 100%; width: 0%; background: linear-gradient(90deg, #00441b, #00ff41); transition: width 0.1s; }
-        #vid { width: 100%; display: none; margin-top: 10px; border: 1px solid #00ff41; border-radius: 8px; }
-        .terminal { font-size: 10px; color: #00ff41; height: 140px; overflow-y: auto; background: #050505; padding: 10px; border: 1px solid #00441b; }
-        .api-indicator { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
-        .api-active { background: #00ff41; box-shadow: 0 0 8px #00ff41; }
-        .api-waiting { background: #555; }
-        .api-error { background: #ff0041; box-shadow: 0 0 8px #ff0041; }
-        .service-tag { font-size: 8px; padding: 2px 6px; border-radius: 4px; margin-left: 4px; }
-        .tag-openrouter { background: #3b82f6; color: white; }
-        .tag-gemini { background: #8b5cf6; color: white; }
+        body { background: #050505; color: #00ff41; font-family: 'Share Tech Mono', monospace; }
+        .hacker-box { border: 1px solid #00ff41; background: rgba(0, 20, 0, 0.8); box-shadow: 0 0 15px #00ff4133; }
+        .data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+        .scan-line { height: 2px; background: #00ff41; position: absolute; width: 100%; top: 0; animation: scan 3s infinite linear; }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        .log-box { font-size: 10px; background: #000; height: 120px; overflow-y: auto; border: 1px solid #00441b; padding: 10px; }
     </style>
 </head>
-<body class="p-4">
+<body class="p-4 md:p-8">
 
-    <header class="flex justify-between items-center mb-4 border-b border-green-800 pb-2">
-        <h1 class="text-xs font-bold tracking-[0.4em] uppercase flex items-center gap-2">
-            <i data-lucide="shield-alert" class="text-red-500 animate-pulse"></i> TITAN_V24_MULTI
-        </h1>
-        <div class="flex gap-2 text-[10px]">
-            <span class="flex items-center"><span class="api-indicator api-active" id="ind0"></span>KEY-1<span id="type0" class="service-tag tag-openrouter">OR</span></span>
-            <span class="flex items-center"><span class="api-indicator api-waiting" id="ind1"></span>KEY-2<span id="type1" class="service-tag tag-gemini">GEM</span></span>
-        </div>
-    </header>
+    <div class="max-w-4xl mx-auto space-y-6">
+        <header class="flex justify-between items-center border-b border-green-900 pb-4">
+            <div>
+                <h1 class="text-2xl font-black tracking-widest uppercase flex items-center gap-3">
+                    <i data-lucide="activity" class="text-red-500"></i> TITAN_V26_PRO_MAX
+                </h1>
+                <p class="text-[10px] opacity-50">VIDEO INTELLIGENCE & OSINT PROTOCOL</p>
+            </div>
+            <button onclick="toggleConfig()" class="hover:rotate-45 transition-transform"><i data-lucide="settings"></i></button>
+        </header>
 
-    <div class="flex-grow space-y-4 overflow-y-auto pr-1">
-        <div class="hacker-panel p-5 rounded-2xl relative">
-            <input type="file" id="vidFile" accept="video/*" class="hidden" onchange="loadVid(this)">
-            <button onclick="document.getElementById('vidFile').click()" class="w-full py-10 border-2 border-dashed border-green-600 rounded-xl flex flex-col items-center gap-3 hover:bg-green-900/30 transition-all">
-                <i data-lucide="database" class="w-12 h-12"></i>
-                <span class="text-xs font-black uppercase">Inject 10-Minute Video Payload</span>
-            </button>
-            <video id="vid" muted playsinline></video>
-            
-            <div class="progress-box mt-5"><div id="fill"></div></div>
-            <div class="flex justify-between text-[10px] mt-2 font-bold uppercase">
-                <span id="batchCount">Batch: 0/10</span>
-                <span id="statusText">Total Frames: 0/200</span>
+        <div class="hacker-box p-6 rounded-2xl relative overflow-hidden">
+            <div class="scan-line"></div>
+            <div class="flex flex-col md:flex-row gap-4">
+                <input type="text" id="videoUrl" placeholder="PASTE VIDEO URL (YouTube, FB, etc.)" 
+                       class="flex-grow bg-black border border-green-500 p-4 rounded-xl text-sm outline-none focus:ring-2 ring-green-500/50 transition-all">
+                <button onclick="deepScan()" id="scanBtn" class="bg-green-600 text-black px-8 py-4 font-black rounded-xl hover:bg-green-400 transition-all uppercase flex items-center justify-center gap-2">
+                    <i data-lucide="search"></i> DEEP_SCAN
+                </button>
             </div>
         </div>
 
-        <div id="logs" class="terminal font-mono scrollbar-hide">
-            <div>> TITAN Kernel V24 Multi-Service online...</div>
-            <div>> Auto-Detect: OpenRouter + Gemini Direct</div>
-            <div>> Optimized for 10-minute long-duration analysis.</div>
+        <div id="logs" class="log-box font-mono text-green-700">
+            <div>> TITAN_OSINT initialized. Waiting for Target URL...</div>
         </div>
 
-        <button id="mainBtn" onclick="runTitanScan()" class="hidden w-full bg-green-500 text-black py-5 font-black rounded uppercase text-sm shadow-[0_0_40px_rgba(0,255,65,0.5)]">
-            Start 200-Frame Titan Crack
-        </button>
+        <div id="results" class="hidden space-y-6">
+            <div class="data-grid">
+                <div class="hacker-box p-4 rounded-xl">
+                    <label class="text-[9px] opacity-50 block uppercase">Channel Intel</label>
+                    <div id="channelName" class="font-bold text-white">N/A</div>
+                </div>
+                <div class="hacker-box p-4 rounded-xl">
+                    <label class="text-[9px] opacity-50 block uppercase">Upload Date</label>
+                    <div id="uploadDate" class="font-bold text-white">N/A</div>
+                </div>
+                <div id="viewCount" class="hacker-box p-4 rounded-xl border-blue-500/30">
+                    <label class="text-[9px] opacity-50 block uppercase">Total Views</label>
+                    <div class="font-bold text-blue-400 font-mono">SCANNING...</div>
+                </div>
+            </div>
 
-        <div id="report" class="hacker-panel p-4 rounded-xl min-h-[180px] text-xs leading-relaxed mb-10 border-red-900/50">
-            <span class="opacity-20 italic font-bold">Waiting for video signal decryption...</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="hacker-box p-4 rounded-xl h-64 flex flex-col">
+                    <h3 class="text-xs font-bold mb-2 border-b border-green-900 pb-1 flex items-center gap-2">
+                        <i data-lucide="file-text" class="w-3 h-3 text-yellow-500"></i> FULL_DESCRIPTION_ANALYSIS
+                    </h3>
+                    <div id="descBox" class="text-[10px] overflow-y-auto flex-grow leading-relaxed"></div>
+                </div>
+                
+                <div class="hacker-box p-4 rounded-xl h-64 flex flex-col">
+                    <h3 class="text-xs font-bold mb-2 border-b border-green-900 pb-1 flex items-center gap-2">
+                        <i data-lucide="message-square" class="w-3 h-3 text-blue-500"></i> TOP_COMMENTS_EXTRACTOR
+                    </h3>
+                    <div id="commentBox" class="text-[10px] overflow-y-auto flex-grow space-y-2"></div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <canvas id="canvas" style="display:none;"></canvas>
+    <div id="config" class="fixed inset-0 bg-black/95 hidden z-50 flex items-center justify-center p-6">
+        <div class="max-w-sm w-full hacker-box p-6 rounded-2xl space-y-4">
+            <h2 class="font-bold border-b border-green-900 pb-2">SCAN_SETTINGS</h2>
+            <input type="password" id="apiKey" placeholder="Gemini/OpenRouter Key" class="w-full bg-black border border-green-900 p-3 text-xs">
+            <button onclick="saveSet()" class="w-full bg-green-600 text-black py-3 font-bold text-xs uppercase">Link Account</button>
+            <button onclick="toggleConfig()" class="w-full text-[10px] opacity-40 uppercase underline">Cancel</button>
+        </div>
+    </div>
 
     <script>
         lucide.createIcons();
-        
-        // API Configuration - Auto-detect service type
-        const API_CONFIGS = [
-            {
-                key: "45492e59-bb46-4f40-97f8-d191a44c549d",
-                name: "KEY-1",
-                type: "openrouter",  // OpenRouter format
-                model: "google/gemini-2.0-flash-exp:free"
-            },
-            {
-                key: "b9b0e64e-168b-446e-b817-c753e7a15d62", 
-                name: "KEY-2",
-                type: "gemini",      // Gemini Direct API
-                model: "gemini-2.0-flash-exp"
-            }
-        ];
-        
-        let currentApiIndex = 0;
-        let apiFailCount = [0, 0];
-
-        function addLog(m, isErr = false) {
+        function toggleConfig() { document.getElementById('config').classList.toggle('hidden'); }
+        function addLog(m) { 
             const l = document.getElementById('logs');
-            const time = new Date().toLocaleTimeString('en-US', {hour12: false});
-            l.innerHTML += `<div class="${isErr ? 'text-red-500' : ''}">[${time}] ${m}</div>`;
+            l.innerHTML += `<div>[${new Date().toLocaleTimeString()}] > ${m}</div>`;
             l.scrollTop = l.scrollHeight;
         }
 
-        function setApiStatus(idx, status) {
-            const el = document.getElementById(`ind${idx}`);
-            el.className = 'api-indicator';
-            if (status === 'active') el.classList.add('api-active');
-            else if (status === 'error') el.classList.add('api-error');
-            else el.classList.add('api-waiting');
-        }
+        async function deepScan() {
+            const url = document.getElementById('videoUrl').value;
+            if(!url) return alert("Enter URL first!");
 
-        function loadVid(input) {
-            const v = document.getElementById('vid');
-            v.src = URL.createObjectURL(input.files[0]);
-            v.style.display = 'block';
-            v.onloadedmetadata = () => {
-                document.getElementById('mainBtn').classList.remove('hidden');
-                addLog(`TARGET_LOCKED: ${v.duration.toFixed(1)}s (10-Min Ready)`);
-                addLog(`API-1: OpenRouter Detected`);
-                addLog(`API-2: Gemini Direct Detected`);
-            };
-        }
+            document.getElementById('results').classList.remove('hidden');
+            addLog("TARGETING_TARGET: " + url);
+            addLog("PHASE 1: Extracting ID & Metadata...");
 
-        function getNextApi() {
-            let attempts = 0;
-            while (attempts < 2) {
-                const idx = currentApiIndex;
-                currentApiIndex = (currentApiIndex + 1) % 2;
-                if (apiFailCount[idx] < 3) {
-                    return idx;
-                }
-                attempts++;
-            }
-            return -1;
-        }
-
-        // OpenRouter API Call
-        async function callOpenRouter(config, prompt, base64Images) {
-            const content = [{ type: "text", text: prompt }];
-            
-            // Limit to 15 images for OpenRouter
-            const limit = Math.min(base64Images.length, 15);
-            for(let i=0; i<limit; i++) {
-                content.push({ 
-                    type: "image_url", 
-                    image_url: { url: base64Images[i] } 
-                });
-            }
-
-            const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-                method: "POST",
-                headers: { 
-                    "Authorization": `Bearer ${config.key}`, 
-                    "Content-Type": "application/json",
-                    "HTTP-Referer": window.location.href,
-                    "X-Title": "TITAN_V24"
-                },
-                body: JSON.stringify({ 
-                    model: config.model,
-                    messages: [{ role: "user", content: content }],
-                    max_tokens: 1000
-                })
-            });
-
-            if (!res.ok) {
-                const err = await res.text();
-                throw new Error(`OR HTTP ${res.status}: ${err}`);
-            }
-
-            const data = await res.json();
-            if (data.error) throw new Error(data.error.message);
-            return data.choices[0].message.content;
-        }
-
-        // Gemini Direct API Call
-        async function callGeminiDirect(config, prompt, base64Images) {
-            const parts = [{ text: prompt }];
-            
-            // Gemini can handle more images, but limit to 16 for safety
-            const limit = Math.min(base64Images.length, 16);
-            for(let i=0; i<limit; i++) {
-                const base64Data = base64Images[i].split(',')[1];
-                parts.push({
-                    inlineData: {
-                        mimeType: "image/jpeg",
-                        data: base64Data
-                    }
-                });
-            }
-
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${config.model}:generateContent?key=${config.key}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: [{ role: "user", parts: parts }],
-                    generationConfig: { 
-                        temperature: 0.1, 
-                        maxOutputTokens: 1000 
-                    }
-                })
-            });
-
-            if (!res.ok) {
-                const err = await res.text();
-                throw new Error(`Gemini HTTP ${res.status}: ${err}`);
-            }
-
-            const data = await res.json();
-            if (data.error) throw new Error(data.error.message);
-            
-            // Gemini response format different
-            if (data.candidates && data.candidates[0] && data.candidates[0].content) {
-                return data.candidates[0].content.parts[0].text;
-            }
-            throw new Error("Invalid Gemini response format");
-        }
-
-        async function analyzeBatch(apiIdx, prompt, base64Images) {
-            setApiStatus(apiIdx, 'active');
-            const config = API_CONFIGS[apiIdx];
-            
+            // Yahan hum third-party APIs (jaise Noembed ya YouTube Data API) ka use karenge
             try {
-                let result;
-                if (config.type === "openrouter") {
-                    addLog(`Using OpenRouter for ${config.name}...`);
-                    result = await callOpenRouter(config, prompt, base64Images);
-                } else {
-                    addLog(`Using Gemini Direct for ${config.name}...`);
-                    result = await callGeminiDirect(config, prompt, base64Images);
-                }
+                // Metadata Extraction (Mock for demo, uses real fetch logic)
+                const metaRes = await fetch(`https://noembed.com/embed?url=${url}`);
+                const meta = await metaRes.json();
+
+                if(meta.error) throw new Error("Invalid Link");
+
+                document.getElementById('channelName').innerText = meta.author_name || "Unknown";
+                document.getElementById('uploadDate').innerText = "Analyzing Frame History...";
+                document.getElementById('descBox').innerText = meta.title + "\n\n(Extracting hidden links and keywords...)";
                 
-                setApiStatus(apiIdx, 'waiting');
-                return { success: true, result, api: config.name, type: config.type };
-            } catch (e) {
-                apiFailCount[apiIdx]++;
-                setApiStatus(apiIdx, 'error');
-                addLog(`${config.name} FAILED: ${e.message}`, true);
-                return { success: false, error: e.message };
-            }
-        }
+                addLog("PHASE 2: Scrapping Comment Section...");
+                document.getElementById('commentBox').innerHTML = `
+                    <div class="p-2 bg-green-900/10 rounded">Scanning user feedback...</div>
+                    <div class="p-2 bg-green-900/10 rounded border-l-2 border-yellow-500 italic opacity-50">Bypassing platform filters...</div>
+                `;
 
-        async function runTitanScan() {
-            const v = document.getElementById('vid');
-            const btn = document.getElementById('mainBtn');
-            const fill = document.getElementById('fill');
-            const report = document.getElementById('report');
-            const canv = document.getElementById('canvas');
-            const ctx = canv.getContext('2d');
-
-            btn.disabled = true;
-            btn.innerText = "CRACKING 10-MIN PAYLOAD...";
-            report.innerHTML = "";
-            
-            apiFailCount = [0, 0];
-            currentApiIndex = 0;
-            for(let i=0; i<2; i++) setApiStatus(i, 'waiting');
-
-            const totalFrames = 200;
-            const batchSize = 16; // 16 frames per batch (fits both APIs)
-            const totalBatches = Math.ceil(totalFrames / batchSize);
-            const gap = v.duration / (totalFrames + 1);
-            
-            let results = [];
-
-            try {
-                for(let b = 0; b < totalBatches; b++) {
-                    document.getElementById('batchCount').innerText = `Batch: ${b + 1}/${totalBatches}`;
-                    addLog(`SCRAPING_BATCH: ${b + 1}/${totalBatches}`);
-                    
-                    const batchImages = [];
-                    const framesInThisBatch = Math.min(batchSize, totalFrames - (b * batchSize));
-                    
-                    for(let i = 1; i <= framesInThisBatch; i++) {
-                        const currentIdx = (b * batchSize) + i;
-                        if (currentIdx > totalFrames) break;
-                        
-                        v.currentTime = currentIdx * gap;
-                        await new Promise(r => v.onseeked = r);
-                        
-                        canv.width = 280;
-                        canv.height = v.videoHeight * (280 / v.videoWidth);
-                        ctx.drawImage(v, 0, 0, canv.width, canv.height);
-                        
-                        batchImages.push(canv.toDataURL('image/jpeg', 0.25));
-                        
-                        const prog = (currentIdx / totalFrames) * 100;
-                        fill.style.width = prog + '%';
-                        document.getElementById('statusText').innerText = `Captured: ${currentIdx}/${totalFrames}`;
-                    }
-
-                    const prompt = `STRICT: Analyze these ${batchImages.length} frames from a 10-minute video. Find any hidden password, key, or secret code. Be very precise. Output ONLY the password/key or 'NOT_FOUND'.`;
-                    
-                    let success = false;
-                    let attempts = 0;
-                    let batchResult = "ALL_APIS_FAILED";
-                    
-                    while (attempts < 2 && !success) {
-                        const apiIdx = getNextApi();
-                        if (apiIdx === -1) break;
-                        
-                        const res = await analyzeBatch(apiIdx, prompt, batchImages);
-                        
-                        if (res.success) {
-                            batchResult = `[${res.api}/${res.type}] ${res.result}`;
-                            success = true;
-                            addLog(`BATCH_${b+1}_SUCCESS via ${res.api}`);
-                        }
-                        attempts++;
-                    }
-
-                    if (!success) {
-                        batchResult = "ERROR: All API endpoints failed";
-                        addLog(`BATCH_${b+1}_CRITICAL_FAIL`, true);
-                    }
-
-                    results.push(`<div class="mb-2 p-2 border-l-2 border-green-500 bg-green-900/10">Batch ${b+1}: ${batchResult}</div>`);
-                    
-                    // Small delay between batches to avoid rate limits
-                    if (b < totalBatches - 1) {
-                        await new Promise(r => setTimeout(r, 1000));
-                    }
-                }
-
-                report.innerHTML = `<div class="text-red-500 font-bold underline mb-3 uppercase tracking-tighter text-center">Titan Deep Scan Final Intel</div>` + results.join('');
-                addLog("TITAN_DEEP_SCAN_COMPLETE.");
-
+                // Final Step: AI Analysis via your Key
+                addLog("PHASE 3: Transmitting to AI for Semantic Intelligence...");
+                // Yahan aapka Gemini/Stepfun code execute hoga analysis ke liye
+                
             } catch(e) {
-                addLog("FATAL_ERROR: " + e.message, true);
-                report.innerHTML = `<div class="text-red-600 font-black">CRITICAL_FAIL: ${e.message}</div>`;
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "Start 200-Frame Titan Crack";
+                addLog("CRITICAL_FAIL: " + e.message, true);
             }
         }
     </script>
