@@ -2,107 +2,191 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YT Pass Cracker - Voice Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>YT Pass Cracker - Ultimate Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-        body { background-color: #050505; font-family: 'Share Tech Mono', monospace; color: #00ff41; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
-        .glass-panel { background: rgba(15, 15, 15, 0.95); backdrop-filter: blur(10px); border: 1px solid #00ff4133; }
-        .glow-green { box-shadow: 0 0 20px rgba(0, 255, 65, 0.2); }
-        .recon-btn { background: linear-gradient(90deg, #00441b, #008f11); color: white; font-weight: bold; border: 1px solid #00ff41; }
-        .password-box { border: 1px solid #00ff41; padding: 12px; background: rgba(0, 255, 65, 0.05); border-radius: 8px; position: relative; }
-        .voice-btn { cursor: pointer; transition: transform 0.2s; }
-        .voice-btn:active { transform: scale(1.2); color: #fff; }
+        
+        :root {
+            --hacker-green: #00ff41;
+            --hacker-dark: #050505;
+        }
+
+        body {
+            background-color: var(--hacker-dark);
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--hacker-green);
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .glass-panel {
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 255, 65, 0.2);
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.1);
+        }
+
+        .chat-area::-webkit-scrollbar { width: 3px; }
+        .chat-area::-webkit-scrollbar-thumb { background: var(--hacker-green); }
+
+        .intel-box {
+            border: 1px solid var(--hacker-green);
+            background: rgba(0, 255, 65, 0.05);
+            animation: pulse-border 2s infinite;
+        }
+
+        @keyframes pulse-border {
+            0% { border-color: rgba(0, 255, 65, 0.2); }
+            50% { border-color: rgba(0, 255, 65, 1); }
+            100% { border-color: rgba(0, 255, 65, 0.2); }
+        }
+
+        .scanline {
+            width: 100%;
+            height: 1px;
+            background: rgba(0, 255, 65, 0.1);
+            position: absolute;
+            top: 0;
+            animation: scan 4s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        input {
+            background: #000 !important;
+            border: 1px solid #00ff4144 !important;
+            color: var(--hacker-green) !important;
+        }
     </style>
 </head>
 <body>
+    <div class="scanline"></div>
 
-    <header class="p-4 border-b border-green-900 flex justify-between items-center glass-panel">
+    <header class="p-4 glass-panel border-b border-green-900 flex justify-between items-center z-10">
         <div class="flex items-center gap-2">
-            <i data-lucide="mic-2" class="text-green-500 animate-pulse"></i>
-            <h1 class="text-md tracking-widest uppercase glow-green">Voice_Infiltrator_v4</h1>
+            <i data-lucide="shield-check" class="w-6 h-6 animate-pulse"></i>
+            <h1 class="text-lg font-bold tracking-widest uppercase">Tube_Hacker_Pro</h1>
         </div>
-        <button onclick="document.getElementById('settingsModal').classList.toggle('hidden')">
-            <i data-lucide="settings" class="w-5 h-5"></i>
+        <button onclick="toggleModal(true)" class="p-2 hover:bg-green-900/30 rounded-full">
+            <i data-lucide="cpu" class="w-6 h-6"></i>
         </button>
     </header>
 
-    <div class="p-4 space-y-4">
+    <div class="p-4 space-y-3 z-10">
         <div class="glass-panel rounded-xl p-2 flex gap-2">
-            <input id="ytUrl" type="text" placeholder="YouTube Link..." class="flex-grow bg-black p-3 rounded text-sm text-green-400 border-none focus:ring-1 focus:ring-green-500">
-            <button onclick="loadVideo()" class="bg-green-700 text-white px-5 py-3 rounded font-bold text-xs">LOAD</button>
+            <input id="ytUrl" type="text" placeholder="Target YT URL..." 
+                   class="flex-grow p-3 rounded text-sm focus:ring-1 focus:ring-green-500 outline-none">
+            <button onclick="loadVideo()" id="loadBtn" 
+                    class="bg-green-700 text-black px-6 py-3 rounded font-bold text-xs uppercase hover:bg-green-500 transition-all">
+                FETCH
+            </button>
         </div>
         
-        <button id="reconBtn" onclick="autoScan()" class="hidden w-full recon-btn py-4 rounded-xl uppercase flex items-center justify-center gap-3">
-            <i data-lucide="zap"></i> Deep Auto-Scan & Narrate
+        <button id="reconBtn" onclick="autoScan()" 
+                class="hidden w-full bg-green-600/10 border border-green-500 text-green-400 py-4 rounded-xl uppercase font-bold text-sm flex items-center justify-center gap-3 hover:bg-green-500 hover:text-black transition-all">
+            <i data-lucide="search-code"></i> Auto-Scan for Passwords
         </button>
     </div>
 
-    <div id="chatArea" class="flex-grow overflow-y-auto p-4 space-y-4 text-sm mb-20">
-        <div class="opacity-50 text-[10px]">[SYSTEM INITIALIZED] Awaiting Data...</div>
+    <div id="chatArea" class="flex-grow chat-area overflow-y-auto p-4 space-y-4 text-sm">
+        <div class="opacity-40 text-xs">[SYSTEM] Firewall bypassed. Waiting for target URL...</div>
     </div>
 
-    <div class="fixed bottom-0 w-full p-4 glass-panel border-t border-green-900">
+    <div class="p-4 glass-panel border-t border-green-900 z-10">
         <div class="flex gap-2">
-            <input id="userInput" type="text" placeholder="Ask specific intel..." class="flex-grow bg-black p-3 rounded text-sm text-green-500 border border-green-900">
-            <button onclick="sendMessage()" class="p-3 bg-green-900/50 rounded border border-green-500">
-                <i data-lucide="send" class="w-5 h-5"></i>
+            <input id="userInput" type="text" placeholder="Ask anything about the video..." 
+                   class="flex-grow p-3 rounded text-sm outline-none"
+                   onkeypress="if(event.key === 'Enter') sendMessage()">
+            <button onclick="sendMessage()" class="p-3 bg-green-900/50 border border-green-500 rounded hover:bg-green-500 hover:text-black">
+                <i data-lucide="terminal" class="w-5 h-5"></i>
             </button>
         </div>
     </div>
 
     <div id="settingsModal" class="fixed inset-0 bg-black/95 hidden z-50 p-8 flex flex-col justify-center">
-        <h2 class="text-green-500 text-xl mb-6 tracking-widest underline">ROOT_ACCESS_ONLY</h2>
-        <input id="apiKey" type="password" placeholder="OpenRouter API Key" class="w-full bg-black border border-green-900 p-4 mb-4 rounded text-green-500">
-        <input id="modelName" type="text" placeholder="Model Path (e.g. google/gemini-2.0-flash-lite-001)" class="w-full bg-black border border-green-900 p-4 mb-6 rounded text-green-500">
-        <button onclick="saveSettings()" class="w-full bg-green-600 text-black font-black py-4 rounded-xl">SAVE_AND_EXIT</button>
+        <div class="glass-panel p-6 rounded-2xl max-w-sm mx-auto w-full">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-green-500 text-xl tracking-tighter">[CONFIG_DB]</h2>
+                <button onclick="toggleModal(false)"><i data-lucide="x"></i></button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] uppercase opacity-50 block mb-1">OpenRouter Key</label>
+                    <input id="apiKey" type="password" placeholder="sk-or-..." class="w-full p-3 rounded text-sm">
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase opacity-50 block mb-1">AI Model Name</label>
+                    <input id="modelName" type="text" placeholder="e.g. google/gemini-2.0-flash-lite-001" class="w-full p-3 rounded text-sm">
+                </div>
+                <button onclick="saveSettings()" class="w-full bg-green-600 text-black font-black py-4 rounded-xl mt-4">SAVE_CHANGES</button>
+            </div>
+        </div>
     </div>
 
     <script>
         lucide.createIcons();
         let videoContext = "";
 
-        function saveSettings() {
-            localStorage.setItem('hk_key', document.getElementById('apiKey').value);
-            localStorage.setItem('hk_model', document.getElementById('modelName').value);
-            document.getElementById('settingsModal').classList.add('hidden');
+        // Voice Engine
+        function speak(text) {
+            const utterance = new SpeechSynthesisUtterance(text.replace(/[^\w\s\d,.]/gi, ''));
+            utterance.rate = 0.85;
+            utterance.pitch = 0.7;
+            window.speechSynthesis.speak(utterance);
         }
 
-        // Voice Engine Function
-        function speak(text) {
-            // Remove emojis and special chars for cleaner voice
-            const cleanText = text.replace(/[^\w\s\d,.]/gi, '');
-            const utterance = new SpeechSynthesisUtterance(cleanText);
-            utterance.rate = 0.9; // Slightly slower for clarity
-            utterance.pitch = 0.8; // Deeper "hacker" tone
-            window.speechSynthesis.speak(utterance);
+        function toggleModal(show) {
+            document.getElementById('settingsModal').classList.toggle('hidden', !show);
+        }
+
+        function saveSettings() {
+            localStorage.setItem('hacker_key', document.getElementById('apiKey').value);
+            localStorage.setItem('hacker_model', document.getElementById('modelName').value);
+            toggleModal(false);
+            appendMessage('system', 'Database updated. Ready for infiltration.');
         }
 
         async function loadVideo() {
             const url = document.getElementById('ytUrl').value;
-            if(!url) return;
-            appendMessage('system', 'Intercepting signals from YouTube...');
+            const btn = document.getElementById('loadBtn');
+            if(!url) return alert('Input URL required!');
+
+            btn.disabled = true;
+            btn.innerText = "SCRAPING...";
+            appendMessage('system', `Accessing: ${url}`);
+
             try {
                 const res = await fetch(`https://r.jina.ai/${url}`);
                 videoContext = await res.text();
                 document.getElementById('reconBtn').classList.remove('hidden');
-                appendMessage('system', 'TRANSCRIPT CAPTURED. Data ready for deep-scan.');
-                speak("Transcript captured. Ready for deep scan.");
+                appendMessage('system', 'Transcript captured. Encryption key needed for further analysis.');
+                speak("Target data captured. You can now start auto scan.");
             } catch (e) {
-                appendMessage('system', 'FAILED TO INFILTRATE URL.');
+                appendMessage('system', 'Connection failed. Target server unreachable.');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "FETCH";
             }
         }
 
         async function autoScan() {
-            const key = localStorage.getItem('hk_key');
-            const model = localStorage.getItem('hk_model') || 'google/gemini-2.0-flash-lite-001';
-            if(!key) return alert("API Key Missing!");
+            const key = localStorage.getItem('hacker_key');
+            const model = localStorage.getItem('hacker_model') || 'google/gemini-2.0-flash-lite-001';
+            if(!key) return toggleModal(true);
 
-            document.getElementById('reconBtn').innerText = "SCANNIG & READING...";
-            
-            const prompt = "Analyze this transcript. Find any password, passcode, key, or hidden codes mentioned. If found, list them clearly. If they are mentioned in parts, combine them into one string. Be very direct.";
+            appendMessage('system', 'Initiating Deep Scan...');
+            document.getElementById('reconBtn').innerText = "SCANNING...";
+
+            const prompt = "You are a specialized security AI. Examine the transcript and find ALL passwords, passcodes, access keys, or secret parts. If the password is given in multiple parts (e.g. 'part 1 is A', 'part 2 is B'), combine them. Report in a clear list with context.";
 
             try {
                 const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -112,7 +196,7 @@
                         "model": model,
                         "messages": [
                             {"role": "system", "content": prompt},
-                            {"role": "user", "content": "TRANSCRIPT: " + videoContext}
+                            {"role": "user", "content": "TRANSCRIPT DATA:\n" + videoContext}
                         ]
                     })
                 });
@@ -120,24 +204,45 @@
                 const result = data.choices[0].message.content;
                 
                 appendMessage('intel', result);
-                speak("Scan complete. Here are the secrets found: " + result);
-
+                speak("Scan completed. Result found. " + result);
             } catch (e) {
-                appendMessage('system', 'SCAN_FAILED');
+                appendMessage('system', 'Scan failed. Check API balance or model name.');
             } finally {
-                document.getElementById('reconBtn').innerText = "Start Auto-Scan";
+                document.getElementById('reconBtn').innerText = "Auto-Scan for Passwords";
             }
         }
 
         async function sendMessage() {
             const input = document.getElementById('userInput');
-            const q = input.value;
-            if(!q || !videoContext) return;
-            appendMessage('user', q);
+            const question = input.value;
+            const key = localStorage.getItem('hacker_key');
+            const model = localStorage.getItem('hacker_model') || 'google/gemini-2.0-flash-lite-001';
+
+            if(!question || !videoContext) return;
+            if(!key) return toggleModal(true);
+
+            appendMessage('user', question);
             input.value = '';
-            
-            // Logic is same as previous but with speak integration
-            // (Skipped full fetch code here for brevity, same as autoScan)
+
+            try {
+                const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                    method: "POST",
+                    headers: { "Authorization": `Bearer ${key}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        "model": model,
+                        "messages": [
+                            {"role": "system", "content": "Analyze the transcript and answer concisely: " + videoContext},
+                            {"role": "user", "content": question}
+                        ]
+                    })
+                });
+                const data = await res.json();
+                const aiText = data.choices[0].message.content;
+                appendMessage('ai', aiText);
+                speak(aiText);
+            } catch (e) {
+                appendMessage('system', 'Infiltration failed.');
+            }
         }
 
         function appendMessage(role, text) {
@@ -145,18 +250,25 @@
             const div = document.createElement('div');
             
             if(role === 'intel') {
-                div.className = "password-box animate-pulse";
+                div.className = "intel-box p-4 rounded-xl space-y-2";
                 div.innerHTML = `
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="text-red-500 font-bold">[!] SECRETS_EXTRACTED:</span>
-                        <i data-lucide="volume-2" class="voice-btn text-green-400" onclick="speak('${text.replace(/'/g, "\\'")}')"></i>
+                    <div class="flex justify-between">
+                        <span class="text-red-500 font-bold tracking-tighter">[INTEL_FOUND]</span>
+                        <button onclick="speak(\`${text.replace(/`/g, "'")}\`)"><i data-lucide="volume-2" class="w-4 h-4"></i></button>
                     </div>
-                    <div class="text-white">${text.replace(/\n/g, '<br>')}</div>
+                    <div class="text-white text-xs leading-relaxed">${text.replace(/\n/g, '<br>')}</div>
                 `;
             } else {
-                div.className = "mb-2 flex justify-between items-center";
-                div.innerHTML = `<div><span class="opacity-40">[${role.toUpperCase()}]</span> ${text}</div>
-                                 <i data-lucide="volume-1" class="w-4 h-4 opacity-50 voice-btn" onclick="speak('${text.replace(/'/g, "\\'")}')"></i>`;
+                div.className = `flex flex-col ${role === 'user' ? 'items-end' : 'items-start'}`;
+                div.innerHTML = `
+                    <span class="text-[10px] opacity-40 uppercase mb-1">${role}</span>
+                    <div class="max-w-[85%] p-3 rounded-lg ${role === 'user' ? 'bg-green-900/30 text-green-300' : 'bg-white/5'}">
+                        ${text}
+                        <button onclick="speak(\`${text.replace(/`/g, "'")}\`)" class="ml-2 inline-block align-middle opacity-50 hover:opacity-100">
+                            <i data-lucide="volume-1" class="w-3 h-3"></i>
+                        </button>
+                    </div>
+                `;
             }
             
             area.appendChild(div);
@@ -164,9 +276,9 @@
             area.scrollTop = area.scrollHeight;
         }
 
-        document.getElementById('apiKey').value = localStorage.getItem('hk_key') || '';
-        document.getElementById('modelName').value = localStorage.getItem('hk_model') || 'google/gemini-2.0-flash-lite-001';
+        // Initialize Settings
+        document.getElementById('apiKey').value = localStorage.getItem('hacker_key') || '';
+        document.getElementById('modelName').value = localStorage.getItem('hacker_model') || 'google/gemini-2.0-flash-lite-001';
     </script>
 </body>
-    </html>
-    
+</html>
