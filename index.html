@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TITAN AI SUITE v5.0 | All-in-One Tools</title>
+    <title>TITAN AI SUITE v5.1 | Direct Access</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -20,91 +20,6 @@
         
         .tech-font { font-family: 'Share Tech Mono', monospace; }
         
-        /* Auth Screen */
-        #authScreen {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .auth-card {
-            background: rgba(20, 20, 30, 0.95);
-            border: 1px solid #00ff41;
-            border-radius: 24px;
-            padding: 40px;
-            width: 100%;
-            max-width: 420px;
-            box-shadow: 0 0 60px rgba(0, 255, 65, 0.15);
-        }
-        
-        .input-dark {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 14px 18px;
-            color: #fff;
-            font-size: 15px;
-            transition: all 0.3s;
-            margin-bottom: 16px;
-        }
-        
-        .input-dark:focus {
-            border-color: #00ff41;
-            outline: none;
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
-        }
-        
-        .btn-glow {
-            width: 100%;
-            background: linear-gradient(135deg, #00ff41 0%, #00cc33 100%);
-            color: #000;
-            border: none;
-            border-radius: 12px;
-            padding: 16px;
-            font-weight: 800;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .btn-glow:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 40px rgba(0, 255, 65, 0.4);
-        }
-        
-        .btn-outline {
-            width: 100%;
-            background: transparent;
-            border: 2px solid #00ff41;
-            color: #00ff41;
-            border-radius: 12px;
-            padding: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 12px;
-        }
-        
-        .btn-outline:hover {
-            background: #00ff41;
-            color: #000;
-        }
-        
-        /* Main App */
-        #mainApp {
-            display: none;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
         .glass-panel {
             background: rgba(20, 20, 25, 0.9);
             border: 1px solid rgba(0, 255, 65, 0.2);
@@ -119,6 +34,47 @@
             background: linear-gradient(135deg, #00ff41, #00d9ff, #ff00aa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+        
+        .input-dark {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 14px 18px;
+            color: #fff;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        
+        .input-dark:focus {
+            border-color: #00ff41;
+            outline: none;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+        }
+        
+        .btn-glow {
+            background: linear-gradient(135deg, #00ff41 0%, #00cc33 100%);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-weight: 800;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-glow:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0, 255, 65, 0.4);
+        }
+        
+        .btn-glow:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
         
         .tool-btn {
@@ -163,7 +119,7 @@
         
         @keyframes load {
             0% { background-position: 100% 0; }
-            100% { background-position: -100% 0; }
+            100% { background-position: -200% 0; }
         }
         
         .history-item {
@@ -211,11 +167,6 @@
             font-size: 13px;
         }
         
-        .api-input:focus {
-            border-color: #00d9ff;
-            outline: none;
-        }
-        
         .bypass-btn {
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
             color: white;
@@ -227,33 +178,89 @@
             transition: all 0.3s;
         }
         
-        .bypass-btn:hover {
+        .bypass-btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(238, 90, 36, 0.4);
+        }
+        
+        .bypass-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
         
         .download-link {
             background: linear-gradient(135deg, #00ff41 0%, #00d9ff 100%);
             color: #000;
-            padding: 12px 24px;
+            padding: 16px 32px;
             border-radius: 12px;
-            font-weight: 700;
+            font-weight: 800;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             text-decoration: none;
             transition: all 0.3s;
+            font-size: 16px;
         }
         
         .download-link:hover {
             transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.4);
+            box-shadow: 0 15px 40px rgba(0, 255, 65, 0.5);
+        }
+        
+        .error-box {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            color: #ff6b6b;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 16px;
+        }
+        
+        .success-box {
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            color: #00ff41;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 16px;
+        }
+        
+        .backend-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ff41;
+            border-radius: 12px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 50;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff41;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-dot.offline {
+            background: #ff6b6b;
+            animation: none;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
         
         .frame-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 8px;
             margin-top: 16px;
         }
         
@@ -263,62 +270,29 @@
             border-radius: 8px;
             border: 2px solid #333;
             overflow: hidden;
-            position: relative;
+            cursor: pointer;
         }
         
-        .frame-thumb.active {
+        .frame-thumb:hover {
             border-color: #00ff41;
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
         }
         
-        .progress-ring {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: 4px solid #333;
-            border-top-color: #00ff41;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .frame-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
     </style>
 </head>
 <body>
 
-    <!-- AUTH SCREEN -->
-    <div id="authScreen">
-        <div class="auth-card">
-            <div class="text-center mb-8">
-                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#00ff41] to-[#00d9ff] flex items-center justify-center mx-auto mb-4">
-                    <i data-lucide="shield" class="w-8 h-8 text-black"></i>
-                </div>
-                <h1 class="text-2xl font-black text-white mb-1">TITAN AI SUITE</h1>
-                <p class="text-gray-400 text-sm">v5.0 Ultimate Tools Collection</p>
-            </div>
-            
-            <!-- Login Form -->
-            <form id="loginForm">
-                <input type="text" id="loginUser" class="input-dark" placeholder="Username" required>
-                <input type="password" id="loginPass" class="input-dark" placeholder="Password" required>
-                <button type="submit" class="btn-glow">LOGIN</button>
-                <button type="button" class="btn-outline" onclick="showRegister()">Create Account</button>
-            </form>
-            
-            <!-- Register Form -->
-            <form id="registerForm" class="hidden">
-                <input type="text" id="regUser" class="input-dark" placeholder="Username" required>
-                <input type="email" id="regEmail" class="input-dark" placeholder="Email" required>
-                <input type="password" id="regPass" class="input-dark" placeholder="Password" required>
-                <input type="password" id="regConfirm" class="input-dark" placeholder="Confirm Password" required>
-                <button type="submit" class="btn-glow">REGISTER</button>
-                <button type="button" class="btn-outline" onclick="showLogin()">Back to Login</button>
-            </form>
-        </div>
+    <!-- Backend Status -->
+    <div class="backend-status" id="backendStatus">
+        <div class="status-dot offline" id="statusDot"></div>
+        <span class="text-sm font-bold tech-font" id="statusText">BACKEND: CHECKING...</span>
     </div>
 
-    <!-- MAIN APP -->
+    <!-- MAIN APP - Direct Access -->
     <div id="mainApp">
         <!-- Header -->
         <div class="max-w-6xl mx-auto mb-6">
@@ -329,58 +303,49 @@
                     </div>
                     <div>
                         <h1 class="text-2xl font-black"><span class="gradient-text">TITAN</span> <span class="text-white">AI</span></h1>
-                        <p class="text-gray-400 text-xs">Ultimate Tools Suite v5.0</p>
+                        <p class="text-gray-400 text-xs">Direct Access v5.1</p>
                     </div>
                 </div>
                 
                 <div class="flex items-center gap-3">
-                    <span id="userPill" class="bg-[#00ff41] text-black px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2">
-                        <i data-lucide="user" class="w-4 h-4"></i>
-                        <span id="displayUser">User</span>
-                    </span>
                     <button onclick="openSettings()" class="p-2 rounded-lg bg-white/5 hover:bg-[#00d9ff]/20 border border-white/10">
                         <i data-lucide="settings" class="w-5 h-5 text-[#00d9ff]"></i>
                     </button>
-                    <button onclick="logout()" class="p-2 rounded-lg bg-white/5 hover:bg-red-500/20 border border-white/10">
-                        <i data-lucide="log-out" class="w-5 h-5 text-red-400"></i>
+                    <button onclick="openHistory()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-[#00ff41]/20 border border-white/10">
+                        <i data-lucide="history" class="w-5 h-5"></i>
+                        <span class="font-bold text-sm">History</span>
+                        <span id="histCount" class="bg-[#00ff41] text-black text-xs px-2 py-1 rounded-full">0</span>
                     </button>
                 </div>
             </div>
             
-            <!-- Tool Categories -->
+            <!-- Quick Tool Select -->
             <div class="flex gap-2 mb-4 overflow-x-auto pb-2">
-                <button onclick="openToolMenu()" class="flex items-center gap-2 px-4 py-3 rounded-xl bg-white/5 hover:bg-[#00ff41]/20 border border-white/10 whitespace-nowrap">
-                    <i data-lucide="grid" class="w-5 h-5"></i>
-                    <span class="font-bold text-sm">All Tools</span>
+                <button onclick="switchTool(0)" class="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#00ff41]/20 border border-[#00ff41]/50 whitespace-nowrap hover:bg-[#00ff41]/30 transition">
+                    <i data-lucide="video" class="w-5 h-5 text-[#00ff41]"></i>
+                    <span class="font-bold text-sm text-[#00ff41]">Video AI</span>
                 </button>
-                <button onclick="filterTools('ai')" class="flex items-center gap-2 px-4 py-3 rounded-xl bg-white/5 hover:bg-[#00d9ff]/20 border border-white/10 whitespace-nowrap">
-                    <i data-lucide="brain" class="w-5 h-5"></i>
-                    <span class="font-bold text-sm">AI Tools</span>
+                <button onclick="switchTool(1)" class="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#00d9ff]/20 border border-[#00d9ff]/50 whitespace-nowrap hover:bg-[#00d9ff]/30 transition">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-[#00d9ff]"></i>
+                    <span class="font-bold text-sm text-[#00d9ff]">AI Chat</span>
                 </button>
-                <button onclick="filterTools('bypass')" class="flex items-center gap-2 px-4 py-3 rounded-xl bg-white/5 hover:bg-[#ff6b6b]/20 border border-white/10 whitespace-nowrap">
-                    <i data-lucide="unlock" class="w-5 h-5"></i>
-                    <span class="font-bold text-sm">Link Bypass</span>
+                <button onclick="switchTool(2)" class="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#fbbf24]/20 border border-[#fbbf24]/50 whitespace-nowrap hover:bg-[#fbbf24]/30 transition">
+                    <i data-lucide="scan-eye" class="w-5 h-5 text-[#fbbf24]"></i>
+                    <span class="font-bold text-sm text-[#fbbf24]">Vision</span>
                 </button>
-                <button onclick="filterTools('vision')" class="flex items-center gap-2 px-4 py-3 rounded-xl bg-white/5 hover:bg-[#fbbf24]/20 border border-white/10 whitespace-nowrap">
-                    <i data-lucide="eye" class="w-5 h-5"></i>
-                    <span class="font-bold text-sm">Vision</span>
-                </button>
-                <button onclick="openHistory()" class="flex items-center gap-2 px-4 py-3 rounded-xl bg-white/5 hover:bg-[#00d9ff]/20 border border-white/10 whitespace-nowrap">
-                    <i data-lucide="history" class="w-5 h-5"></i>
-                    <span class="font-bold text-sm">History</span>
-                    <span id="histCount" class="bg-[#00d9ff] text-black text-xs px-2 py-1 rounded-full">0</span>
+                <button onclick="switchTool(3)" class="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#ff6b6b]/20 border border-[#ff6b6b]/50 whitespace-nowrap hover:bg-[#ff6b6b]/30 transition">
+                    <i data-lucide="unlock" class="w-5 h-5 text-[#ff6b6b]"></i>
+                    <span class="font-bold text-sm text-[#ff6b6b]">Bypass</span>
                 </button>
             </div>
             
             <div id="toolName" class="text-center text-[#00ff41] font-bold tech-font text-lg">
-                SELECT A TOOL TO BEGIN
+                TRINITY VIDEO ANALYZER
             </div>
         </div>
 
-        <!-- TOOL PANELS -->
-        
-        <!-- Tool 0: Trinity Video Analyzer -->
-        <div id="panel0" class="max-w-4xl mx-auto hidden">
+        <!-- TOOL 0: Trinity Video -->
+        <div id="panel0" class="max-w-4xl mx-auto">
             <div class="glass-panel">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-10 h-10 rounded-lg bg-[#00ff41] flex items-center justify-center">
@@ -391,23 +356,21 @@
                         <p class="text-gray-400 text-xs">Deep AI analysis + Interview generation</p>
                     </div>
                 </div>
-                
-                <div class="flex flex-col md:flex-row gap-3">
-                    <input type="text" id="ytUrl" placeholder="Paste YouTube URL..." 
-                           class="flex-1 bg-black/50 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#00ff41] focus:outline-none">
-                    <button onclick="analyzeVideo()" id="analyzeBtn" class="btn-glow whitespace-nowrap" style="width: auto; padding: 12px 32px;">
-                        <i data-lucide="zap" class="w-5 h-5 inline mr-2"></i>ANALYZE
+                <div class="flex gap-3">
+                    <input type="text" id="ytUrl" placeholder="YouTube URL..." class="flex-1 input-dark mb-0">
+                    <button onclick="analyzeVideo()" id="analyzeBtn" class="btn-glow" style="width: auto; padding: 12px 24px;">
+                        <i data-lucide="zap" class="w-5 h-5 inline mr-2"></i>Analyze
                     </button>
                 </div>
             </div>
             <div id="loading0" class="hidden glass-panel text-center">
                 <div class="loading-bar rounded mb-4"></div>
-                <p id="loadText0" class="text-[#00ff41] font-bold">Initializing...</p>
+                <p class="text-[#00ff41] font-bold">Processing...</p>
             </div>
             <div id="output0" class="hidden"></div>
         </div>
 
-        <!-- Tool 1: Stepfun AI -->
+        <!-- TOOL 1: Stepfun AI -->
         <div id="panel1" class="max-w-4xl mx-auto hidden">
             <div class="glass-panel border-[#00d9ff]/30">
                 <div class="flex items-center gap-3 mb-4">
@@ -419,25 +382,21 @@
                         <p class="text-gray-400 text-xs">363B tokens • Code • Creative • Analysis</p>
                     </div>
                 </div>
-                
-                <textarea id="aiPrompt" placeholder="Enter your prompt..." 
-                          class="w-full bg-black/50 border border-gray-700 rounded-xl p-4 text-white min-h-[100px] mb-3 focus:border-[#00d9ff] focus:outline-none resize-y"></textarea>
-                
+                <textarea id="aiPrompt" placeholder="Enter your prompt..." class="w-full input-dark min-h-[100px] mb-3 resize-y"></textarea>
                 <div class="flex gap-3">
-                    <select id="aiMode" class="bg-black/50 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#00d9ff] focus:outline-none">
+                    <select id="aiMode" class="input-dark mb-0 w-32">
                         <option value="general">General</option>
                         <option value="code">Code</option>
                         <option value="creative">Creative</option>
                         <option value="analysis">Analysis</option>
                     </select>
-                    <button onclick="runAI()" id="aiBtn" class="flex-1 bg-gradient-to-r from-[#00d9ff] to-[#0088ff] text-black font-bold rounded-xl py-3">
-                        <i data-lucide="send" class="w-5 h-5 inline mr-2"></i>GENERATE
+                    <button onclick="runAI()" id="aiBtn" class="flex-1 bg-gradient-to-r from-[#00d9ff] to-[#0088ff] text-black font-bold rounded-xl py-3 hover:shadow-lg transition">
+                        <i data-lucide="send" class="w-5 h-5 inline mr-2"></i>Generate
                     </button>
                 </div>
-                
                 <div id="aiOutput" class="hidden mt-4 p-4 bg-black/40 rounded-xl border border-[#00d9ff]/20">
                     <div class="flex justify-between mb-2">
-                        <span class="text-[#00d9ff] font-bold text-sm">AI RESPONSE</span>
+                        <span class="text-[#00d9ff] font-bold text-sm">AI Response</span>
                         <button onclick="copyAI()" class="text-gray-400 hover:text-white text-xs">Copy</button>
                     </div>
                     <div id="aiResult" class="text-gray-300 whitespace-pre-wrap text-sm leading-relaxed"></div>
@@ -445,7 +404,7 @@
             </div>
         </div>
 
-        <!-- Tool 2: Video Vision Password Finder -->
+        <!-- TOOL 2: Vision Password Finder -->
         <div id="panel2" class="max-w-4xl mx-auto hidden">
             <div class="glass-panel border-[#fbbf24]/30">
                 <div class="flex items-center gap-3 mb-4">
@@ -458,23 +417,62 @@
                     </div>
                 </div>
                 
-                <div class="mb-4">
-                    <input type="file" id="videoFile" accept="video/*" class="hidden" onchange="loadVideo(this)">
-                    <button onclick="document.getElementById('videoFile').click()" class="w-full py-8 border-2 border-dashed border-[#fbbf24]/50 rounded-xl flex flex-col items-center gap-3 hover:bg-[#fbbf24]/10 transition-all">
-                        <i data-lucide="upload" class="w-10 h-10 text-[#fbbf24]"></i>
-                        <span class="text-[#fbbf24] font-bold">Upload Video File</span>
-                        <span class="text-gray-500 text-xs">MP4, MOV, AVI supported</span>
-                    </button>
-                </div>
+                <input type="file" id="videoFile" accept="video/*" class="hidden" onchange="loadVideo(this)">
+                <button onclick="document.getElementById('videoFile').click()" id="uploadBtn" class="w-full py-8 border-2 border-dashed border-[#fbbf24]/50 rounded-xl mb-4 hover:bg-[#fbbf24]/10 transition-all flex flex-col items-center gap-2">
+                    <i data-lucide="upload" class="w-10 h-10 text-[#fbbf24]"></i>
+                    <span class="text-[#fbbf24] font-bold">Click to Upload Video</span>
+                    <span class="text-gray-500 text-xs">MP4, MOV, AVI, WebM supported</span>
+                </button>
                 
                 <video id="scanVideo" class="w-full rounded-xl mb-4 hidden" controls></video>
                 
                 <div id="scanControls" class="hidden">
-                    <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center justify-between mb-2 text-sm">
                         <span class="text-[#fbbf24] font-bold">Scan Progress</span>
-                        <span id="scanProgress" class="text-gray-400 text-sm">0/50 frames</span>
+                        <span id="scanProgress" class="text-gray-400">0/50 frames</span>
                     </div>
                     <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden mb-4">
-                        <div id="scanBar" class="h-full bg-[#fbbf24] transition-all" style="width: 0%"></div>
+                        <div id="scanBar" class="h-full bg-[#fbbf24] transition-all duration-300" style="width: 0%"></div>
                     </div>
-                    <butt
+                    <button onclick="startScan()" id="scanBtn" class="w-full bg-[#fbbf24] text-black font-bold py-3 rounded-xl hover:shadow-lg hover:shadow-[#fbbf24]/30 transition-all">
+                        <i data-lucide="scan" class="w-5 h-5 inline mr-2"></i>START 50-FRAME SCAN
+                    </button>
+                </div>
+                
+                <div id="scanResults" class="hidden mt-4">
+                    <h4 class="text-white font-bold mb-3 flex items-center gap-2">
+                        <i data-lucide="image" class="w-5 h-5 text-[#fbbf24]"></i> Extracted Frames:
+                    </h4>
+                    <div id="frameGrid" class="frame-grid"></div>
+                    <div id="passwordResult" class="mt-4 p-4 bg-[#fbbf24]/10 border border-[#fbbf24]/30 rounded-xl"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOOL 3: Link Bypass Hub -->
+        <div id="panel3" class="max-w-4xl mx-auto hidden">
+            <!-- GPLinks -->
+            <div class="glass-panel border-[#ff6b6b]/30 mb-4">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-lg bg-[#ff6b6b] flex items-center justify-center">
+                        <i data-lucide="link" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white">GPLinks Bypass</h3>
+                        <p class="text-gray-400 text-xs">Direct download • No timer</p>
+                    </div>
+                </div>
+                <div class="flex flex-col md:flex-row gap-3 mb-3">
+                    <input type="text" id="gplinksUrl" placeholder="https://gplinks.co/xxxxx" class="flex-1 input-dark mb-0">
+                    <button onclick="bypassGPLinks()" id="gplinksBtn" class="bypass-btn whitespace-nowrap">
+                        <i data-lucide="unlock" class="w-5 h-5 inline mr-2"></i>BYPASS
+                    </button>
+                </div>
+                <div id="gplinksLoading" class="hidden mb-3">
+                    <div class="flex items-center gap-3 text-[#ff6b6b]">
+                        <div class="w-5 h-5 border-2 border-[#ff6b6b] border-t-transparent rounded-full animate-spin"></div>
+                        <span class="text-sm font-bold">Bypassing...</span>
+                    </div>
+                </div>
+                <div id="gplinksResult" class="hidden">
+                    <div class="success-box" style="backg
